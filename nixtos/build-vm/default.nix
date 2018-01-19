@@ -17,5 +17,6 @@ pkgs.writeScript name ''
     -smp 1 \
     -kernel ${os}/kernel \
     -initrd ${os}/initrd \
-    -serial mon:stdio -append 'console=ttyS0'
+    -append 'real-init=${os}/init console=ttyS0 foo=bar' \
+    -serial mon:stdio
 ''
