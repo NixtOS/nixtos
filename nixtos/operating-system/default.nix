@@ -9,8 +9,8 @@ let
   # TODO: add nixtos version here
   version = "nixtos-${pkgs.lib.nixpkgsVersion}";
 
-  initScript = pkgs.writeText "init" ''
-    #!${pkgs.busybox} sh
+  initScript = pkgs.writeScript "init" ''
+    #!${pkgs.busybox}/bin/busybox sh
 
     echo "It works!"
 
@@ -29,6 +29,6 @@ let
 in
 pkgs.runCommand version {} ''
   mkdir $out
-  ln -s ${kernel} $out/kernel
-  ln -s ${initrd} $out/initrd
+  ln -s ${kernel}/bzImage $out/kernel
+  ln -s ${initrd}/initrd $out/initrd
 ''
