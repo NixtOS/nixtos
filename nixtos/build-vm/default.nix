@@ -28,7 +28,7 @@ pkgs.writeScript name ''
     -smp 1 \
     -kernel ${os}/kernel \
     -initrd ${os}/initrd \
-    -append 'real-init=${os}/init console=ttyS0 foo=bar' \
+    -append 'real-init=${os}/init console=ttyS0' \
     -serial mon:stdio \
     -drive file=${store-image},if=virtio,readonly
 ''
