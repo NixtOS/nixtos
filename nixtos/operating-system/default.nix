@@ -11,6 +11,7 @@ let
 
   initScript = pkgs.writeScript "init" ''
     #!${pkgs.busybox}/bin/busybox sh
+    PATH="${pkgs.busybox}/bin"
 
     echo "It works!"
 
