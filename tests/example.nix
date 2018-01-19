@@ -1,3 +1,5 @@
 with (import ../nixtos {});
 
-operating-system
+build-vm {
+  os = operating-system {};
+}
