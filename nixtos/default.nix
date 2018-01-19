@@ -1,7 +1,4 @@
 { pkgs ? (import <nixpkgs> {}) }:
 {
-  # TODO: add nixtos version here
-  operating-system = pkgs.runCommand "nixtos-${pkgs.lib.nixpkgsVersion}" {} ''
-      mkdir $out
-  '';
+  operating-system = import ./operating-system { inherit pkgs; };
 }
