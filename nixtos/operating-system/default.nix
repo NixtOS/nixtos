@@ -1,6 +1,9 @@
 { pkgs }:
 {
   kernel ? pkgs.linuxPackages.kernel,
+  hooks ? {
+    make-initrd = (import ./.. { inherit pkgs; }).make-initrd;
+  },
 }:
 
 let
@@ -18,7 +21,7 @@ let
     done
   '';
 
-  initrd = import ../make-initrd { inherit pkgs; } { inherit kernel; };
+  initrd = hooks.make-initrd { inherit kernel; };
 in
 pkgs.runCommand version {} ''
   mkdir $out

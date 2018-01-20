@@ -9,6 +9,10 @@ let
 
   # TODO: build busybox as static and make sure that glibc no longer is in the
   # closure (just building busybox as static isn't enough)
+  # TODO: get rid of these ugly “virtio_blk: Unknown symbol
+  # register_virtio_driver (err 0)” & co. errors (by switching to non-busybox
+  # modprobe? see [1])
+  # [1] https://github.com/quitesimpleorg/N900_RescueOS/commit/0c3ce0d7b46a32e460a4ba6dd8f2799cd68c5c33
   init = pkgs.writeScript "initrd-init" ''
     #!${pkgs.busybox}/bin/sh
     PATH="${pkgs.busybox}/bin"
