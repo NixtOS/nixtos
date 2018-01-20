@@ -3,16 +3,16 @@
 let
   # TODO: build busybox as static and make sure that glibc no longer is in the
   # closure (just building busybox as static isn't enough)
-  initrd-init = pkgs.writeScript "initrd-init" ''
+  init = pkgs.writeScript "initrd-init" ''
     #!${pkgs.busybox}/bin/sh
     PATH="${pkgs.busybox}/bin"
 
-    # Setup basic environment
+    echo "Setting up basic environment"
     mount -t devtmpfs none /dev
     mount -t proc none /proc
     mount -t sysfs none /sys
 
-    # Parse command-line arguments
+    echo "Parsing command-line arguments"
     for o in `cat /proc/cmdline`; do
       case $o in
         real-init=*)
@@ -27,7 +27,7 @@ let
       esac
     done
 
-    # Get the root ready
+    echo "Loading requested modules"
     mkdir /real-root
     echo "/dev:"
     ls /dev
@@ -35,20 +35,21 @@ let
     echo "Store of the initrd:"
     ls /nix/store
 
+    echo "Mounting root filesystem"
     mount /dev/sda /real-root
 
-    # Cleanup
+    echo "Cleaning up"
     umount /sys
     umount /proc
     umount /dev
 
-    # And switch to the real environment
+    echo "Switching to on-disk init"
     exec switch_root /real-root $real_init
   '';
 in
 pkgs.makeInitrd {
   contents = [
-    { object = initrd-init;
+    { object = init;
       symlink = "/init";
     }
   ];
