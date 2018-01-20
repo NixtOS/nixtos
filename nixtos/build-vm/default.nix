@@ -1,7 +1,16 @@
-# TODO: this is *very* centered on testing while developing.
+# TODO: this is *very* centered on testing while developing. Allowing to use
+# different disks than one fixed in the store should already help
 { pkgs }:
 
-{ os }:
+{
+  os,
+  extra-cmdline-args ? "",
+  qemu ? "${pkgs.kvm}/bin/qemu-kvm",
+  cpu ? "host",
+  memory ? "1G",
+  ncpu ? 1,
+  extra-qemu-args ? "",
+}:
 
 let
   # TODO: add os name here
@@ -17,18 +26,18 @@ let
     ${pkgs.libguestfs}/bin/virt-make-fs root.tgz $out
   '';
 in
-# TODO: do not hardcode amd64 etc. here
 pkgs.writeScript name ''
   #!${pkgs.bash}/bin/bash
 
   exec ${pkgs.kvm}/bin/qemu-kvm \
-    -cpu kvm64 \
+    -cpu ${cpu} \
     -name ${name} \
-    -m 1024 \
-    -smp 1 \
+    -m ${memory} \
+    -smp ${toString ncpu} \
     -kernel ${os}/kernel \
     -initrd ${os}/initrd \
-    -append 'real-init=${os}/init console=ttyS0' \
+    -append 'real-init=${os}/init console=ttyS0 ${extra-cmdline-args}' \
     -serial mon:stdio \
-    -drive file=${store-image},if=virtio,readonly
+    -drive file=${store-image},if=virtio,readonly \
+    ${extra-qemu-args}
 ''
