@@ -1,10 +1,10 @@
 { pkgs }:
-{ kernel }:
+{ kernel, modules }:
 
 let
-  modules = pkgs.makeModulesClosure {
+  module-closure = pkgs.makeModulesClosure {
     kernel = kernel;
-    rootModules = [ "virtio_pci" "virtio_blk" "ext4" ]; # TODO: make this configurable
+    rootModules = modules;
   };
 
   # TODO: build busybox as static and make sure that glibc no longer is in the
@@ -34,7 +34,7 @@ let
 
     echo "Loading requested modules"
     mkdir /lib
-    ln -s ${modules}/lib/modules /lib/modules
+    ln -s ${module-closure}/lib/modules /lib/modules
     modprobe virtio_pci
     modprobe virtio_blk
     modprobe ext4
