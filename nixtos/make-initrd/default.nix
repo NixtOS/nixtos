@@ -13,16 +13,11 @@ let
     mount -t sysfs none /sys
 
     echo "Parsing command-line arguments"
-    for o in `cat /proc/cmdline`; do
-      case $o in
+    for opt in $(cat /proc/cmdline); do
+      case $opt in
         real-init=*)
-          set -- `sh -c "IFS='='; echo $o"`
-          real_init="$2"
-          ;;
-        console=*)
-          ;;
-        *)
-          echo -e "Failed to understand parameter ‘$o’!"
+          real_init="$(echo "$opt" | sed 's/.*=//')"
+          echo "Found real init ‘$real_init’"
           ;;
       esac
     done
