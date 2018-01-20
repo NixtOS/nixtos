@@ -8,7 +8,8 @@ let
   version = "nixtos-${pkgs.lib.nixpkgsVersion}";
 
   real-init = pkgs.writeScript "real-init" ''
-    #!${pkgs.busybox}/bin/sh
+    #!${pkgs.bash}/bin/bash
+    PATH=${pkgs.coreutils}/bin
 
     echo "In real init!"
 
