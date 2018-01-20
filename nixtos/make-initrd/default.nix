@@ -1,6 +1,12 @@
 { pkgs }:
+{ kernel }:
 
 let
+  modules = pkgs.makeModulesClosure {
+    kernel = kernel;
+    rootModules = [ "virtio_pci" "virtio_blk" "ext4" ]; # TODO: make this configurable
+  };
+
   # TODO: build busybox as static and make sure that glibc no longer is in the
   # closure (just building busybox as static isn't enough)
   init = pkgs.writeScript "initrd-init" ''
@@ -23,15 +29,15 @@ let
     done
 
     echo "Loading requested modules"
-    mkdir /real-root
-    echo "/dev:"
-    ls /dev
-
-    echo "Store of the initrd:"
-    ls /nix/store
+    mkdir /lib
+    ln -s ${modules}/lib/modules /lib/modules
+    modprobe virtio_pci
+    modprobe virtio_blk
+    modprobe ext4
 
     echo "Mounting root filesystem"
-    mount /dev/sda /real-root
+    mkdir /real-root
+    mount /dev/vda /real-root
 
     echo "Cleaning up"
     umount /sys

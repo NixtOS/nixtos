@@ -17,7 +17,7 @@ let
     done
   '';
 
-  initrd = import ../make-initrd { inherit pkgs; };
+  initrd = import ../make-initrd { inherit pkgs; } { inherit kernel; };
 in
 pkgs.runCommand version {} ''
   mkdir $out
