@@ -13,8 +13,7 @@
 }:
 
 let
-  # TODO: add os name here
-  name = "vm";
+  name = "vm-${os.name}";
 
   store-image = pkgs.runCommand "store-image.raw" {
     # TODO: fix (and upstream) the packaging of libguestfs so that this
