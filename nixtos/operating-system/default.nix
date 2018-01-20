@@ -1,5 +1,6 @@
 { pkgs }:
 {
+  name ? "nixtos-${pkgs.lib.nixpkgsVersion}", # TODO: add nixtos version here
   kernel ? pkgs.linuxPackages.kernel,
   initrd-modules ? [],
   hooks ? {
@@ -8,9 +9,6 @@
 }:
 
 let
-  # TODO: add nixtos version here
-  version = "nixtos-${pkgs.lib.nixpkgsVersion}";
-
   real-init = pkgs.writeScript "real-init" ''
     #!${pkgs.bash}/bin/bash
     PATH=${pkgs.coreutils}/bin
@@ -27,7 +25,7 @@ let
     modules = initrd-modules;
   };
 in
-pkgs.runCommand version {} ''
+pkgs.runCommand name {} ''
   mkdir $out
   ln -s ${kernel}/bzImage $out/kernel
   ln -s ${initrd}/initrd $out/initrd
