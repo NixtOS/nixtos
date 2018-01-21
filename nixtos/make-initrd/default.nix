@@ -33,7 +33,7 @@ let
     find $out/{bin,lib} -type f | while read f; do
       ldd "$f" | \
         awk '{ if ($3 != "") print $3 }' | \
-        xargs -I {} bash -c "copy_lib {}" \
+        xargs -n 1 -I {} bash -c "copy_lib {}" \
         || true # Error here basically means static executable
     done
 
@@ -42,12 +42,13 @@ let
     stripDirs "lib bin" "-s"
 
     echo "Nuke references to everything but us"
-    find $out/{bin,lib} -type f | xargs nuke-refs -e $out
+    find $out/{bin,lib} -type f | xargs -n 1 nuke-refs -e $out
 
     echo "Reset interpreter"
     find $out/{bin,lib} -type f | \
-      xargs patchelf --set-interpreter $out/lib/ld*.so.? --set-rpath $out/lib \
-      || true # Error here basically means static executable
+      xargs -n 1 patchelf --set-interpreter $out/lib/ld*.so.? \
+                          --set-rpath $out/lib \
+      || true # Error here basically means static executable or library
 
     echo "Testing patched programs"
     $out/bin/ash -c 'echo "Test"' | grep 'Test' > /dev/null
