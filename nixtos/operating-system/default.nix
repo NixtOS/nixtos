@@ -1,6 +1,6 @@
 { pkgs }:
 {
-  name ? "nixtos-${pkgs.lib.nixpkgsVersion}", # TODO: add nixtos version here
+  name ? (import ./.. { inherit pkgs; }).version.name,
   kernel ? pkgs.linuxPackages.kernel,
   initrd-modules ? [],
   hooks ? {
