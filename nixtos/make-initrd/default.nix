@@ -24,9 +24,11 @@ let
     export -f copy_lib
 
     echo "Copying BusyBox"
-    for f in ${pkgs.busybox}/{s,}bin/*; do
-      copy_bin "$f"
-    done
+    copy_bin ${pkgs.busybox}/bin/*
+
+    echo "Copying kmod"
+    copy_bin ${pkgs.kmod}/bin/kmod
+    ln -sf kmod $out/bin/modprobe
 
     echo "Copying relevant libraries"
     copy_lib ${pkgs.glibc.out}/lib/ld*.so.?
@@ -52,12 +54,11 @@ let
 
     echo "Testing patched programs"
     $out/bin/ash -c 'echo "Test"' | grep 'Test' > /dev/null
+    $out/bin/kmod -h | grep 'Usage:' > /dev/null
+    $out/bin/modprobe -h | grep 'Usage:' > /dev/null
   '';
 
-  # TODO: get rid of these ugly “virtio_blk: Unknown symbol
-  # register_virtio_driver (err 0)” & co. errors (by switching to non-busybox
-  # modprobe? see [1])
-  # [1] https://github.com/quitesimpleorg/N900_RescueOS/commit/0c3ce0d7b46a32e460a4ba6dd8f2799cd68c5c33
+  # TODO: allow for custom filesystem hierarchy
   init = pkgs.writeScript "initrd-init" ''
     #!${utils}/bin/ash
     PATH="${utils}/bin"
