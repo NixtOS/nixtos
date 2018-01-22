@@ -23,9 +23,7 @@
 
 { pkgs }:
 
-{ kernel, services }:
-
-assert !(services ? "kernel");
+services:
 
 let
   all-extenders = builtins.concatLists (

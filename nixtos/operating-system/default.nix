@@ -10,8 +10,11 @@
   },
 }:
 
+assert !(services ? "kernel");
+assert !(services ? "activation-scripts");
+
 let
-  solved-services = hooks.solve-services { inherit kernel services; };
+  solved-services = hooks.solve-services services;
 
   kernel-extenders = solved-services.extenders-for-assert-type "kernel" "init";
   init-command = assert builtins.length kernel-extenders == 1;
