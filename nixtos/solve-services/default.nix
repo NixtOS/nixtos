@@ -24,18 +24,7 @@ let
 
   extenders-for-assert-type = service: type:
     map (e: assert e.type == type; e) (extenders-for service);
-
-  kernel-extenders = extenders-for-assert-type "kernel" "init";
-  kernel-extender = assert builtins.length kernel-extenders == 1;
-                    builtins.head kernel-extenders;
-
-  activation-extenders =
-    extenders-for-assert-type "activation-scripts" "script";
 in
 {
-  init-command = kernel-extender.command;
-
-  activation-script = builtins.concatStringsSep "\n" (
-    map (e: e.script) activation-extenders
-  );
+  inherit extenders-for extenders-for-assert-type;
 }

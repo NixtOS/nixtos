@@ -13,15 +13,25 @@
 let
   solved-services = hooks.solve-services { inherit kernel services; };
 
+  kernel-extenders = solved-services.extenders-for-assert-type "kernel" "init";
+  init-command = assert builtins.length kernel-extenders == 1;
+                 (builtins.head kernel-extenders).command;
+
+  activation-extenders =
+    solved-services.extenders-for-assert-type "activation-scripts" "script";
+  activation-script = builtins.concatStringsSep "\n" (
+    map (e: e.script) activation-extenders
+  );
+
   real-init = pkgs.writeScript "real-init" ''
     #!${pkgs.bash}/bin/bash
     PATH=${pkgs.coreutils}/bin
 
     # TODO: mount filesystems, etc.
 
-    ${solved-services.activation-script}
+    ${activation-script}
 
-    exec ${solved-services.init-command}
+    exec ${init-command}
   '';
 
   initrd = hooks.make-initrd {
