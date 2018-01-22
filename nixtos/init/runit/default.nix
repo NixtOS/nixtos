@@ -18,7 +18,9 @@ extenders: [
       type = "symlink";
       file = "/etc/runit/1";
       target = pkgs.writeScript "runit-1" ''
-        Hello world from runit initialization script
+        #!${pkgs.bash}/bin/bash
+
+        echo "Hello world from runit initialization script"
       '';
     };
   }
