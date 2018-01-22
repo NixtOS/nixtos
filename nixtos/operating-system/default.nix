@@ -3,22 +3,23 @@
   name ? (import ./.. { inherit pkgs; }).version.name,
   kernel ? pkgs.linuxPackages.kernel,
   initrd-modules ? [],
-  init ? (import ./.. { inherit pkgs; }).init.runit,
+  services ? {},
   hooks ? {
     make-initrd = (import ./.. { inherit pkgs; }).make-initrd;
+    solve-services = (import ./.. { inherit pkgs; }).solve-services;
   },
 }:
 
-assert pkgs.lib.elem "init" init.types;
-
 let
+  solved-services = hooks.solve-services { inherit kernel services; };
+
   real-init = pkgs.writeScript "real-init" ''
     #!${pkgs.bash}/bin/bash
     PATH=${pkgs.coreutils}/bin
 
     # TODO: mount filesystems, etc.
 
-    exec ${init.command}
+    exec ${solved-services.init-command}
   '';
 
   initrd = hooks.make-initrd {

@@ -4,5 +4,6 @@
   make-initrd = import ./make-initrd { inherit pkgs; };
   init = import ./init { inherit pkgs; };
   operating-system = import ./operating-system { inherit pkgs; };
+  solve-services = import ./solve-services { inherit pkgs; };
   version = import ./version { inherit pkgs; };
 }
