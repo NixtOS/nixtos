@@ -9,6 +9,8 @@
   },
 }:
 
+assert pkgs.lib.elem "init" init.types;
+
 let
   real-init = pkgs.writeScript "real-init" ''
     #!${pkgs.bash}/bin/bash
