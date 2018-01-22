@@ -12,6 +12,7 @@
 #  * "init": Init service, with a `command` argument
 #  * "script": Script, with a `script` argument
 #  * "symlink": Symlink, with `file` and `target` arguments
+#  * "service": Service, with `name` and `script` arguments
 #  * Anything with a ':' in it, which is defined and used outside of NixtOS. A
 #    user should prefix his types with 'user:' for personal use, and services
 #    distributed for further use should be prefixed with 'domain.example.org:'
