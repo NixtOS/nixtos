@@ -21,6 +21,9 @@
 #   { extends = "..."; # The service being extended
 #     data = {};       # The associated extending block
 #   }
+# `data` can be either a set, in which case it is directly the extending block,
+# or a list, in which case it is a list of extending blocks that will be passed
+# on to the same extended service.
 
 { pkgs }:
 
