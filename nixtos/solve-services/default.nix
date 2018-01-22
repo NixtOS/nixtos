@@ -34,7 +34,10 @@ let
   );
 
   extenders-for = service:
-    map (e: e.data) (
+    pkgs.lib.concatMap (e:
+      if builtins.isList e.data then e.data
+      else [ e.data ]
+    ) (
       builtins.filter (e: e.extends == service) all-extenders
     );
 
