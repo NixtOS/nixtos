@@ -3,6 +3,7 @@
   name ? (import ./.. { inherit pkgs; }).version.name,
   kernel ? pkgs.linuxPackages.kernel,
   initrd-modules ? [],
+  init ? (import ./.. { inherit pkgs; }).init.runit,
   hooks ? {
     make-initrd = (import ./.. { inherit pkgs; }).make-initrd;
   },
@@ -13,11 +14,9 @@ let
     #!${pkgs.bash}/bin/bash
     PATH=${pkgs.coreutils}/bin
 
-    echo "In real init!"
+    # TODO: mount filesystems, etc.
 
-    while true; do
-      sleep 1
-    done
+    exec ${init.command}
   '';
 
   initrd = hooks.make-initrd {
