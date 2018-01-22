@@ -15,6 +15,7 @@
 let
   name = "vm-${os.name}";
 
+  # TODO: use a virtfs instead of an image built with libguestfs?
   store-image = pkgs.runCommand "store-image.raw" {
     # TODO: fix (and upstream) the packaging of libguestfs so that this
     # buildInput is no longer needed
@@ -28,6 +29,9 @@ in
 pkgs.writeScript name ''
   #!${pkgs.bash}/bin/bash
 
+  cp ${store-image} "${name}.qcow2"
+  chmod u+w "${name}.qcow2"
+
   exec ${pkgs.kvm}/bin/qemu-kvm \
     -cpu ${cpu} \
     -name ${name} \
@@ -37,6 +41,6 @@ pkgs.writeScript name ''
     -initrd ${os}/initrd \
     -append 'real-init=${os}/init console=ttyS0 ${extra-cmdline-args}' \
     -serial mon:stdio \
-    -drive file=${store-image},if=virtio,readonly \
+    -drive file="${name}.qcow2",if=virtio \
     ${extra-qemu-args}
 ''
