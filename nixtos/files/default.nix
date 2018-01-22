@@ -13,7 +13,7 @@ extenders:
       {
         type = "script";
         script = pkgs.lib.concatStringsSep "\n" (map (e:
-          ''mkdir -p "${baseNameOf e.file}"'' + "\n" + (
+          ''mkdir -p "$(dirname "${e.file}")"'' + "\n" + (
             if e.type == "symlink" then
               ''ln -s "${e.target}" "${e.file}"''
             else
