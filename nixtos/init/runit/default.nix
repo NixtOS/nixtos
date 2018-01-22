@@ -3,7 +3,7 @@
 { kernel ? "kernel" }:
 
 extenders: [
-  { extends = "kernel";
+  { extends = kernel;
     data = {
       type = "init";
       command = "${pkgs.runit}/bin/runit";
