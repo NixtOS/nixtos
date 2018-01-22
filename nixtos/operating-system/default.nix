@@ -19,6 +19,8 @@ let
 
     # TODO: mount filesystems, etc.
 
+    ${solved-services.activation-script}
+
     exec ${solved-services.init-command}
   '';
 

@@ -13,19 +13,29 @@ assert !(services ? "kernel");
 let
   all-extenders = builtins.concatLists (
     pkgs.lib.mapAttrsToList (service: extenders:
-      extenders (
-        map (e: e.data)
-            (pkgs.lib.filter (e: e.extends == service) all-extenders)
-      )
+      extenders (extenders-for service)
     ) services
   );
 
-  kernel-extenders = builtins.filter (e: e.extends == "kernel") all-extenders;
+  extenders-for = service:
+    map (e: e.data) (
+      builtins.filter (e: e.extends == service) all-extenders
+    );
+
+  extenders-for-assert-type = service: type:
+    map (e: assert e.type == type; e) (extenders-for service);
+
+  kernel-extenders = extenders-for-assert-type "kernel" "init";
   kernel-extender = assert builtins.length kernel-extenders == 1;
-                    let res = builtins.head kernel-extenders; in
-                    assert res.data.type == "init";
-                    res.data;
+                    builtins.head kernel-extenders;
+
+  activation-extenders =
+    extenders-for-assert-type "activation-scripts" "script";
 in
 {
   init-command = kernel-extender.command;
+
+  activation-script = builtins.concatStringsSep "\n" (
+    map (e: e.script) activation-extenders
+  );
 }
