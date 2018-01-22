@@ -4,6 +4,7 @@ build-vm {
   os = operating-system {
     initrd-modules = [ "virtio_pci" "virtio_blk" "ext4" ];
     services = {
+      "files" = files {};
       "init" = init.runit {};
     };
   };
