@@ -17,11 +17,15 @@ extenders: [
     data = {
       type = "symlink";
       file = "/etc/runit/1";
-      target = pkgs.writeScript "runit-1" ''
-        #!${pkgs.bash}/bin/bash
+      target = pkgs.writeScript "runit-1" "#!${pkgs.bash}/bin/bash";
+    };
+  }
 
-        echo "Hello world from runit initialization script"
-      '';
+  { extends = files;
+    data = {
+      type = "symlink";
+      file = "/etc/runit/3";
+      target = pkgs.writeScript "runit-3" "#!${pkgs.bash}/bin/bash";
     };
   }
 
