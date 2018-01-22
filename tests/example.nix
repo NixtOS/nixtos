@@ -1,4 +1,4 @@
-with (import ../nixtos {});
+with (import ../nixtos { pkgs = import <nixpkgs> {}; });
 
 build-vm {
   os = operating-system {

@@ -1,4 +1,4 @@
-{ pkgs ? (import <nixpkgs> {}) }:
+{ pkgs }:
 {
   build-vm = import ./build-vm { inherit pkgs; };
   make-initrd = import ./make-initrd { inherit pkgs; };
