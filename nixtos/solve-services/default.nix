@@ -1,10 +1,27 @@
-{ pkgs }:
+# This file defines the service solver for NixtOS.
+#
+# Here, a service is defined as a function that takes as input a list of
+# extending blocks, and outputs a list of extenders.
+#
+# An extending block is defined as a map of the format:
+#   { type = "..."; # The type of the data, as a string
+#     ...           # The data contained
+#   }
+#
+# The "type" argument can be one of the following:
+#  * "init": Init service, with a `command` argument
+#  * "script": Script, with a `script` argument
+#  * Anything with a ':' in it, which is defined and used outside of NixtOS. A
+#    user should prefix his types with 'user:' for personal use, and services
+#    distributed for further use should be prefixed with 'domain.example.org:'
+#
+# An extender is an extending block along with the name of the service it
+# extends. It is a map of the format:
+#   { extends = "..."; # The service being extended
+#     data = {};       # The associated extending block
+#   }
 
-/*
- * This file defines the service solver for NixtOS.
- *
- * TODO: document it
- */
+{ pkgs }:
 
 { kernel, services }:
 
