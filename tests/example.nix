@@ -7,6 +7,9 @@ build-vm {
     block-devices = {
       "/dev/vda" = block-device.virtio-disk {};
     };
+    filesystems = {
+      "/" = filesystem.ext4 { block-device = "/dev/vda"; };
+    };
     services = {
       files = files {};
       init = init.runit {};

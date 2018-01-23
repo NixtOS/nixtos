@@ -1,5 +1,5 @@
 { pkgs }:
-{ kernel, modules }:
+{ kernel, modules, filesystems }:
 
 let
   module-closure = pkgs.makeModulesClosure {
@@ -83,9 +83,13 @@ let
     ln -s ${module-closure}/lib/modules /lib/modules
     ${pkgs.lib.concatStringsSep "\n" (map (mod: "modprobe ${mod}") modules)}
 
+    # TODO: mount block devices and wait for them to be up
+
     echo "Mounting root filesystem"
     mkdir /real-root
-    mount /dev/vda /real-root
+    ${pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (mount: fs:
+        (fs { mountpoint = "/real-root${mount}"; }).mount-command
+      ) filesystems)}
 
     echo "Cleaning up"
     umount /sys

@@ -4,6 +4,7 @@
   kernel ? pkgs.linuxPackages.kernel,
   initrd-modules ? [],
   block-devices,
+  filesystems,
   services ? {},
   hooks ? {
     make-initrd = (import ./.. { inherit pkgs; }).make-initrd;
@@ -40,10 +41,13 @@ let
 
   initrd = hooks.make-initrd {
     inherit kernel;
+
     modules = initrd-modules ++
               pkgs.lib.flatten (pkgs.lib.mapAttrsToList (device: device-type:
                 (device-type { inherit device; }).extra-modules
               ) block-devices);
+
+    inherit filesystems;
   };
 in
 pkgs.runCommand name {} ''
