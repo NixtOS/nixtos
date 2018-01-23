@@ -43,7 +43,7 @@ let
                 device-type.extra-modules
               ) block-devices);
 
-    inherit filesystems;
+    inherit block-devices filesystems;
   };
 in
 pkgs.runCommand name {} ''

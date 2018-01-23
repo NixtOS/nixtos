@@ -1,11 +1,15 @@
 { pkgs, top }:
-{ kernel, modules, filesystems }:
+{ kernel, modules, block-devices, filesystems }:
 
 let
   module-closure = pkgs.makeModulesClosure {
     kernel = kernel;
     rootModules = modules;
   };
+
+  solved-block-devices = top.solve-block-devices block-devices;
+
+  solved-filesystems = top.solve-filesystems filesystems;
 
   # TODO: add a check so that different libraries imported with the same name
   # couldn't conflict
@@ -58,7 +62,7 @@ let
     $out/bin/modprobe -h | grep 'Usage:' > /dev/null
   '';
 
-  # TODO: allow for custom filesystem hierarchy
+  # TODO: only mount the required for getting to “real” init
   init = pkgs.writeScript "initrd-init" ''
     #!${utils}/bin/ash
     PATH="${utils}/bin"
@@ -83,7 +87,11 @@ let
     ln -s ${module-closure}/lib/modules /lib/modules
     ${pkgs.lib.concatStringsSep "\n" (map (mod: "modprobe ${mod}") modules)}
 
-    # TODO: mount block devices and wait for them to be up
+    echo "Building block devices"
+    ${pkgs.lib.concatStringsSep "\n" (
+        map solved-block-devices.build-and-wait-for
+            solved-filesystems.initrd-block-devices
+      )}
 
     echo "Mounting filesystems"
     mkdir /real-root
