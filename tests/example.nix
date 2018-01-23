@@ -3,7 +3,10 @@ with (import ../nixtos { inherit pkgs; });
 
 build-vm {
   os = operating-system {
-    initrd-modules = [ "virtio_pci" "virtio_blk" "ext4" ];
+    initrd-modules = [ "ext4" ];
+    block-devices = {
+      "/dev/vda" = block-device.virtio-disk {};
+    };
     services = {
       files = files {};
       init = init.runit {};

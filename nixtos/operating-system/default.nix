@@ -3,6 +3,7 @@
   name ? (import ./.. { inherit pkgs; }).version.name,
   kernel ? pkgs.linuxPackages.kernel,
   initrd-modules ? [],
+  block-devices,
   services ? {},
   hooks ? {
     make-initrd = (import ./.. { inherit pkgs; }).make-initrd;
@@ -39,7 +40,9 @@ let
 
   initrd = hooks.make-initrd {
     inherit kernel;
-    modules = initrd-modules;
+    modules = initrd-modules ++
+              (map (bd: bd.extra-initrd-modules)
+                   (pkgs.lib.attrValues block-devices));
   };
 in
 pkgs.runCommand name {} ''
