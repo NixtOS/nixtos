@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs, top }:
 
 rec {
   nixpkgs = with pkgs.lib;

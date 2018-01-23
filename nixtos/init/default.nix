@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs, top }:
 {
-  runit = import ./runit { inherit pkgs; };
+  runit = import ./runit { inherit pkgs top; };
 }

@@ -1,6 +1,6 @@
 # TODO: this is *very* centered on testing while developing. Allowing to use
 # different disks than one fixed in the store should already help
-{ pkgs }:
+{ pkgs, top }:
 
 {
   os,

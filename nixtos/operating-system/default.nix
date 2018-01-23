@@ -1,22 +1,18 @@
-{ pkgs }:
+{ pkgs, top }:
 {
-  name ? (import ./.. { inherit pkgs; }).version.name,
+  name ? top.version.name,
   kernel ? pkgs.linuxPackages.kernel,
   initrd-modules ? [],
   block-devices,
   filesystems,
   services ? {},
-  hooks ? {
-    make-initrd = (import ./.. { inherit pkgs; }).make-initrd;
-    solve-services = (import ./.. { inherit pkgs; }).solve-services;
-  },
 }:
 
 assert !(services ? "kernel");
 assert !(services ? "activation-scripts");
 
 let
-  solved-services = hooks.solve-services services;
+  solved-services = top.solve-services services;
 
   kernel-extenders = solved-services.extenders-for-assert-type "kernel" "init";
   init-command = assert builtins.length kernel-extenders == 1;
@@ -39,7 +35,7 @@ let
     exec ${init-command}
   '';
 
-  initrd = hooks.make-initrd {
+  initrd = top.make-initrd {
     inherit kernel;
 
     modules = initrd-modules ++

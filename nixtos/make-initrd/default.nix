@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs, top }:
 { kernel, modules, filesystems }:
 
 let

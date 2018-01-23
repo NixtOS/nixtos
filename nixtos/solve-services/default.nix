@@ -26,7 +26,7 @@
 # or a list, in which case it is a list of extending blocks that will be passed
 # on to the same extended service.
 
-{ pkgs }:
+{ pkgs, top }:
 
 services:
 
