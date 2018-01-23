@@ -41,8 +41,9 @@ let
   initrd = hooks.make-initrd {
     inherit kernel;
     modules = initrd-modules ++
-              (map (bd: bd.extra-initrd-modules)
-                   (pkgs.lib.attrValues block-devices));
+              pkgs.lib.mapAttrsToList (device: device-type:
+                (device-type { inherit device; }).extra-initrd-modules
+              ) block-devices;
   };
 in
 pkgs.runCommand name {} ''
