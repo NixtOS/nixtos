@@ -40,7 +40,7 @@ let
 
     modules = initrd-modules ++
               pkgs.lib.flatten (pkgs.lib.mapAttrsToList (device: device-type:
-                (device-type { inherit device; }).extra-modules
+                device-type.extra-modules
               ) block-devices);
 
     inherit filesystems;

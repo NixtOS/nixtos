@@ -2,10 +2,10 @@
 
 { }:
 
-{ device }:
-
 {
+  depends-on = [];
+
   extra-modules = [ "virtio-pci" "virtio-blk" ];
 
-  build-command = "";
+  build-command = device: "";
 }
