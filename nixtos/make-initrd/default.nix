@@ -85,10 +85,10 @@ let
 
     # TODO: mount block devices and wait for them to be up
 
-    echo "Mounting root filesystem"
+    echo "Mounting filesystems"
     mkdir /real-root
     ${pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (mount: fs:
-        (fs { mountpoint = "/real-root${mount}"; }).mount-command
+        fs.mount-command "/real-root${mount}"
       ) filesystems)}
 
     echo "Cleaning up"
