@@ -81,9 +81,7 @@ let
     echo "Loading requested modules"
     mkdir /lib
     ln -s ${module-closure}/lib/modules /lib/modules
-    modprobe virtio_pci
-    modprobe virtio_blk
-    modprobe ext4
+    ${pkgs.lib.concatStringsSep "\n" (map (mod: "modprobe ${mod}") modules)}
 
     echo "Mounting root filesystem"
     mkdir /real-root
