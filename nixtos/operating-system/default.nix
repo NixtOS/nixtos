@@ -42,7 +42,7 @@ let
     inherit kernel;
     modules = initrd-modules ++
               pkgs.lib.mapAttrsToList (device: device-type:
-                (device-type { inherit device; }).extra-initrd-modules
+                (device-type { inherit device; }).extra-modules
               ) block-devices;
   };
 in
