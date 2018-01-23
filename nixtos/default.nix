@@ -2,6 +2,7 @@
 
 let
   top = pkgs.lib.recursiveUpdate {
+    basic-system = import ./basic-system { inherit pkgs top; };
     block-device = import ./block-device { inherit pkgs top; };
     build-vm = import ./build-vm { inherit pkgs top; };
     files = import ./files { inherit pkgs top; };

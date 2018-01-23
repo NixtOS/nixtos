@@ -10,9 +10,7 @@ build-vm {
     filesystems = {
       "/" = filesystem.ext4 { block-device = "/dev/vda"; };
     };
-    services = {
-      files = files {};
-      init = init.runit {};
+    services = basic-system {} {
       example-service = _: [
         { extends = "init";
           data = {
