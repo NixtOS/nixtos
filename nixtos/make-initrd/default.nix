@@ -94,10 +94,7 @@ let
       )}
 
     echo "Mounting filesystems"
-    mkdir /real-root
-    ${pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (mount: fs:
-        fs.mount-command "/real-root${mount}"
-      ) filesystems)}
+    ${solved-filesystems.mount-all "/real-root"}
 
     echo "Cleaning up"
     umount /sys
