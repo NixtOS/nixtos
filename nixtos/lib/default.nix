@@ -1,5 +1,7 @@
 { pkgs, top }:
 
+# TODO(medium): Rewrite this in dhall, and commit both the dhall and the
+# extracted nix code. Also think of where else we could rewrite in dhall
 rec {
   # Returns the sorted dependencies of a list of elements.
   #
