@@ -1,5 +1,5 @@
-# TODO: this is *very* centered on testing while developing. Allowing to use
-# different disks than one fixed in the store should already help
+# TODO(low): this is *very* centered on testing while developing. Allowing to
+# use different disks than one fixed in the store should already help
 { pkgs, top }:
 
 {
@@ -15,9 +15,9 @@
 let
   name = "vm-${os.name}";
 
-  # TODO: use a virtfs instead of an image built with libguestfs?
+  # TODO(medium): use a virtfs instead of an image built with libguestfs?
   store-image = pkgs.runCommand "store-image.raw" {
-    # TODO: fix (and upstream) the packaging of libguestfs so that this
+    # TODO(low): fix (and upstream) the packaging of libguestfs so that this
     # buildInput is no longer needed
     buildInputs = with pkgs; [ file ];
     exportReferencesGraph = [ "closure" os ];

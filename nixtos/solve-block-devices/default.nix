@@ -16,8 +16,8 @@ let
     done
   '';
 
-  # TODO: it would likely be a bit better to wait for a device only just before
-  # it is required, and not immediately after building it, for better
+  # TODO(low): it would likely be a bit better to wait for a device only just
+  # before it is required, and not immediately after building it, for better
   # parallelization
   build-and-wait-for = bd-name:
     pkgs.lib.concatStringsSep "\n" (map (bd-name:

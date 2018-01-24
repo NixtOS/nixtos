@@ -2,8 +2,9 @@
 
 filesystems:
 
-# TODO: Separate mount-fs-required-for-initrd and mount-all-fs options
+# TODO(high): Separate mount-fs-required-for-initrd and mount-all-fs options
 let
+  # TODO(high): Actually handle mounting everything
   initrd-block-devices = filesystems."/".wait-for-block-devices;
 
   # Returns all parent directories (excluding the path itself) of a path.

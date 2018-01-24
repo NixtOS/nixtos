@@ -11,8 +11,8 @@ let
 
   solved-filesystems = top.solve-filesystems filesystems;
 
-  # TODO: add a check so that different libraries imported with the same name
-  # couldn't conflict
+  # TODO(medium): add a check so that different libraries imported with the same
+  # name couldn't conflict
   utils = pkgs.runCommandCC "initrd-utils" {
     buildInputs = [ pkgs.nukeReferences pkgs.glibc ];
     allowedReferences = [ "out" ];
@@ -62,7 +62,7 @@ let
     $out/bin/modprobe -h | grep 'Usage:' > /dev/null
   '';
 
-  # TODO: only mount the required for getting to “real” init
+  # TODO(high): only mount the required for getting to “real” init
   init = pkgs.writeScript "initrd-init" ''
     #!${utils}/bin/ash
     PATH="${utils}/bin"
