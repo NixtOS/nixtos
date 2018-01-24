@@ -26,9 +26,14 @@ let
 
   real-init = pkgs.writeScript "real-init" ''
     #!${pkgs.bash}/bin/bash
-    PATH=${pkgs.coreutils}/bin
+    PATH=${pkgs.coreutils}/bin:${pkgs.utillinux}/bin
 
-    # TODO: mount filesystems, etc.
+    echo "Mounting filesystems"
+    mkdir /dev /proc /sys
+    mount -t devtmpfs none /dev
+    mount -t proc none /proc
+    mount -t sysfs none /sys
+    ${(top.solve-filesystems filesystems).mount-all "/"}
 
     ${activation-script}
 
