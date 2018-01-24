@@ -9,6 +9,7 @@ let
     filesystem = import ./filesystem { inherit pkgs top; };
     make-initrd = import ./make-initrd { inherit pkgs top; };
     init = import ./init { inherit pkgs top; };
+    lib = import ./lib { inherit pkgs top; };
     operating-system = import ./operating-system { inherit pkgs top; };
     solve-block-devices = import ./solve-block-devices { inherit pkgs top; };
     solve-filesystems = import ./solve-filesystems { inherit pkgs top; };
