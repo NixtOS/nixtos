@@ -38,13 +38,15 @@ let
   initrd = top.make-initrd {
     inherit kernel;
 
-    modules = initrd-modules ++
-              pkgs.lib.flatten (pkgs.lib.mapAttrsToList (device: device-type:
-                device-type.extra-modules
-              ) block-devices) ++
-              pkgs.lib.flatten (pkgs.lib.mapAttrsToList (fs-name: fs-type:
-                fs-type.extra-modules
-              ) filesystems);
+    modules = pkgs.lib.unique (
+      initrd-modules ++
+      pkgs.lib.flatten (pkgs.lib.mapAttrsToList (device: device-type:
+        device-type.extra-modules
+      ) block-devices) ++
+      pkgs.lib.flatten (pkgs.lib.mapAttrsToList (fs-name: fs-type:
+        fs-type.extra-modules
+      ) filesystems)
+    );
 
     inherit block-devices filesystems;
   };
