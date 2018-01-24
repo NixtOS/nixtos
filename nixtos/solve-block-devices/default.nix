@@ -2,33 +2,32 @@
 
 block-devices:
 
-# TODO: run a topological sort so that mounting avoids useless operations?
-
 let
-  if-needed-for = indent: block-device: commands: ''
-    ${indent}if [ ! -b "${block-device}" ]; then
-    ${indent}  echo "Building ${block-device}"
-    ${commands "${indent}  "}
-    ${indent}fi
+  build-one = bd-name: ''
+    if [ ! -b "${bd-name}" ]; then
+      echo "Building ${bd-name}"
+      ${block-devices.${bd-name}.build-command bd-name}
+    fi
   '';
 
-  build = indent: bd-name:
-    let block-device = block-devices.${bd-name}; in
-    if-needed-for indent bd-name (indent:
-      pkgs.lib.concatStringsSep "\n" (map (dep:
-        build-and-wait-for indent block-devices.${dep}
-      ) block-device.depends-on) + "\n" +
-      indent + block-device.build-command bd-name
-    );
+  wait-for = bd-name: ''
+    while [ ! -b ${bd-name} ]; do
+      sleep 0
+    done
+  '';
 
-  build-and-wait-for = indent: block-device:
-    build indent block-device + ''
-      while [ ! -b ${block-device} ]; do
-        sleep 0
-      done
-    '';
+  # TODO: it would likely be a bit better to wait for a device only just before
+  # it is required, and not immediately after building it, for better
+  # parallelization
+  build-and-wait-for = bd-name:
+    pkgs.lib.concatStringsSep "\n" (map (bd-name:
+      build-one bd-name + wait-for bd-name
+    ) (
+      top.lib.sorted-deps-of (a: b: # does a depend on b?
+        builtins.elem b block-devices.${a}.depends-on
+      ) (builtins.attrNames block-devices) [ bd-name ]
+    ));
 in
 {
-  build = build "";
-  build-and-wait-for = build-and-wait-for "";
+  inherit build-and-wait-for;
 }
