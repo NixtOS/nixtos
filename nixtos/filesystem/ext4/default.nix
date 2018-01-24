@@ -4,6 +4,7 @@
 
 {
   wait-for-block-devices = [ block-device ];
+  wait-for-files = [];
 
   extra-modules = [ "ext4" ];
 
