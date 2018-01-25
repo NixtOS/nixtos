@@ -2,11 +2,7 @@
 
 filesystems:
 
-# TODO(high): Separate mount-fs-required-for-initrd and mount-all-fs options
 let
-  # TODO(high): Actually handle mounting everything
-  initrd-block-devices = filesystems."/".wait-for-block-devices;
-
   # List of the mount points
   mountpoints = builtins.attrNames filesystems;
 
@@ -56,6 +52,12 @@ let
   # Returns a script that mounts all the filesystems required in order to access
   # `path`
   mount-filesystems-for = path: root: mount-fs-list (filesystems-for path) root;
+
+  # TODO(low): Also handle the case where the user was crazy enough to have a
+  # mount point *below* the nix store?
+  initrd-block-devices =
+    pkgs.lib.flatten (map (x: filesystems.${x}.wait-for-block-devices)
+                          (filesystems-for "/nix/store"));
 in
 {
   inherit initrd-block-devices mount-all mount-filesystems-for;
