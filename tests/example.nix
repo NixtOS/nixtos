@@ -1,3 +1,5 @@
+# TODO(medium): Use the VM system as a way to automatically test that NixtOS
+# works properly.
 let pkgs = import <nixpkgs> {}; in
 with (import ../nixtos { inherit pkgs; });
 
