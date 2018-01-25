@@ -26,7 +26,7 @@ let
     { begin = [2]; result = [2]; }
     { begin = [1 2]; result = [0 1 2]; }
     { begin = [10]; result = [15 14 12 13 11 10]; }
-    { begin = [6 3]; result = [0 1 2 3 5 6]; }
+    { begin = [6 3]; result = [2 0 1 3 5 6]; }
   ];
 in
 builtins.foldl' (acc: x:
