@@ -62,7 +62,8 @@ let
     $out/bin/modprobe -h | grep 'Usage:' > /dev/null
   '';
 
-  # TODO(high): only mount the required for getting to “real” init
+  # TODO(low): Handle the case where someone was crazy enough to have a mount
+  # point *below* /nix/store?
   init = pkgs.writeScript "initrd-init" ''
     #!${utils}/bin/ash
     PATH="${utils}/bin"
@@ -94,7 +95,7 @@ let
       )}
 
     echo "Mounting filesystems"
-    ${solved-filesystems.mount-all "/real-root"}
+    ${solved-filesystems.mount-filesystems-for "/nix/store" "/real-root"}
 
     echo "Cleaning up"
     umount /sys
