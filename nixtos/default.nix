@@ -2,6 +2,7 @@
 
 { pkgs, hooks ? {} }:
 
+# TODO(low): Cleanup this list by moving things to their right place
 let
   top = pkgs.lib.recursiveUpdate {
     basic-system = import ./basic-system { inherit pkgs top; };
@@ -17,6 +18,7 @@ let
     solve-filesystems = import ./solve-filesystems { inherit pkgs top; };
     solve-services = import ./solve-services { inherit pkgs top; };
     version = import ./version { inherit pkgs top; };
+    vm-drive = import ./vm-drive { inherit pkgs top; };
   } hooks;
 in
   top

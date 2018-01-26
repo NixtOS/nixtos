@@ -1,5 +1,3 @@
-# TODO(low): this is *very* centered on testing while developing. Allowing to
-# use different disks than one fixed in the store should already help
 { pkgs, top }:
 
 {
@@ -9,6 +7,7 @@
   cpu ? "host",
   memory ? "1G",
   ncpu ? 1,
+  drives,
 }:
 
 let
@@ -20,9 +19,19 @@ let
     mkdir $out
     cp -r $(${pkgs.perl}/bin/perl ${pkgs.pathsFromGraph} closure) $out
   '';
+
+  drive-builders = pkgs.lib.concatStringsSep "\n" (
+    map (f: (f { inherit store; }).build) drives
+  );
+
+  drive-options = pkgs.lib.concatStringsSep " \\\n  " (
+    map (f: (f { inherit store; }).options) drives
+  );
 in
 pkgs.writeScript name ''
   #!${pkgs.bash}/bin/bash
+
+  ${drive-builders}
 
   exec ${pkgs.kvm}/bin/qemu-kvm \
     -cpu ${cpu} \
@@ -33,5 +42,5 @@ pkgs.writeScript name ''
     -initrd ${os}/initrd \
     -append 'real-init=${os}/init console=ttyS0 ${extra-cmdline-args}' \
     -serial mon:stdio \
-    -virtfs local,mount_tag=store,path=${store},security_model=none
+    ${drive-options}
 ''

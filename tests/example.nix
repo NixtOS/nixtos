@@ -4,6 +4,9 @@ let pkgs = import <nixpkgs> {}; in
 with (import ../nixtos { inherit pkgs; });
 
 build-vm {
+  drives = [
+    (vm-drive.virtfs-to-store { tag = "store"; })
+  ];
   os = operating-system {
     block-devices = { };
     filesystems = {
