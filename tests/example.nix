@@ -8,7 +8,12 @@ build-vm {
     block-devices = { };
     filesystems = {
       "/" = filesystem.tmpfs {};
-      "/nix/store" = filesystem.virtfs { tag = "store"; };
+      "/nix/.ro-store" = filesystem.virtfs { tag = "store"; };
+      "/nix/store" = filesystem.overlayfs {
+        lower = "/nix/.ro-store";
+        upper = "/nix/.rw-store";
+        work = "/nix/.work-store";
+      };
     };
     services = basic-system {} {
       example-service = _: [

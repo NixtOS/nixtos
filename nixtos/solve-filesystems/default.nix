@@ -2,6 +2,8 @@
 
 filesystems:
 
+# TODO(high) Add a way to override automated dependency management, eg. for a
+# root overlayfs that would use mounts “below” it.
 let
   # List of the mount points
   mountpoints = builtins.attrNames filesystems;
