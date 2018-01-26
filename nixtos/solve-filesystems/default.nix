@@ -29,6 +29,8 @@ let
     builtins.filter (x: builtins.elem x mountpoints)
                     (all-parents path ++ [path]);
 
+  # TODO(high): Actually add some wait to check the wait-for-files files are
+  # actually present before mounting
   # Returns a script that mounts the passed filesystems in the order given
   mount-fs-list = mountpoints: root:
     pkgs.lib.concatStringsSep "\n" (map (fs:

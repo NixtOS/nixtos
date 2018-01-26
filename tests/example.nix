@@ -5,11 +5,10 @@ with (import ../nixtos { inherit pkgs; });
 
 build-vm {
   os = operating-system {
-    block-devices = {
-      "/dev/vda" = block-device.virtio-disk {};
-    };
+    block-devices = { };
     filesystems = {
-      "/" = filesystem.ext4 { block-device = "/dev/vda"; };
+      "/" = filesystem.tmpfs {};
+      "/nix/store" = filesystem.virtfs { tag = "store"; };
     };
     services = basic-system {} {
       example-service = _: [

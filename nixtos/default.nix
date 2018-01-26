@@ -1,3 +1,5 @@
+# TODO(high): Add the equivalent of nixos-rebuild
+
 { pkgs, hooks ? {} }:
 
 let
