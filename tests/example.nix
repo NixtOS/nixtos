@@ -6,9 +6,12 @@ with (import ../nixtos { inherit pkgs; });
 build-vm {
   drives = [
     (vm-drive.virtfs-to-store { tag = "store"; })
+    (vm-drive.empty-drive { name = "test.img"; size = "2G"; persist = true; })
   ];
   os = operating-system {
-    block-devices = { };
+    block-devices = {
+      "/dev/vda" = block-device.virtio-disk {};
+    };
     filesystems = {
       "/" = filesystem.tmpfs {};
       "/nix/.ro-store" = filesystem.virtfs { tag = "store"; };
