@@ -8,5 +8,5 @@
 
   extra-modules = [ "ext4" ];
 
-  mount-command = mountpoint: "mount -t ext4 ${block-device} ${mountpoint}";
+  mount-command = root: mount: "mount -t ext4 ${block-device} ${root}${mount}";
 }

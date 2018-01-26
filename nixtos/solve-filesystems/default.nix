@@ -35,7 +35,7 @@ let
   mount-fs-list = mountpoints: root:
     pkgs.lib.concatStringsSep "\n" (map (fs:
       "mkdir -p ${root}${fs}\n" +
-      filesystems.${fs}.mount-command (root + fs)
+      filesystems.${fs}.mount-command root fs
     ) mountpoints);
 
   # The (ordered) list of all filesystems

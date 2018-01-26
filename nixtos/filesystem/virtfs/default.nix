@@ -13,6 +13,7 @@
   extra-modules = [ "9p" "9pnet_virtio" "virtio_pci" ];
 
   # Accoding to The Internet™, 256KiB (= 262144B) works pretty well
-  mount-command = mount:
-    "mount -t 9p -o trans=virtio,version=9p2000.L,msize=262144 ${tag} ${mount}";
+  mount-command = root: mount: ''
+    mount -t 9p -o trans=virtio,version=9p2000.L,msize=262144 ${tag} ${root}${mount}
+  '';
 }

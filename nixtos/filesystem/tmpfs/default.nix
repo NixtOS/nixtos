@@ -11,5 +11,6 @@ in
 
   extra-modules = [];
 
-  mount-command = mount: "mount -t tmpfs -o size=${sz} none ${mount}";
+  mount-command = root: mount:
+    "mount -t tmpfs -o size=${sz} none ${root}${mount}";
 }
