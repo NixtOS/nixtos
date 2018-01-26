@@ -6,14 +6,15 @@ let
   # List of the mount points
   mountpoints = builtins.attrNames filesystems;
 
-  # Returns all parent directories (excluding the path itself) of a path.
+  # Returns all parent directories (including the path itself) of a path.
   all-parents = path:
-    if path == "/" then [ ]
-    else all-parents (dirOf path) ++ [ (dirOf path) ];
+    if path == "/" then [ "/" ]
+    else all-parents (dirOf path) ++ [ path ];
 
   # Returns all paths that must be present in order to mount a filesystem.
   # This only gives “leaf” paths.
-  all-leaf-deps = mount: filesystems.${mount}.wait-for-files ++ [ mount ];
+  all-leaf-deps = mount: filesystems.${mount}.wait-for-files ++
+                         (if (mount != "/") then [ (dirOf mount) ] else []);
 
   # Returns all paths that must be present in order to mount a filesystem,
   # including parent paths.
@@ -27,7 +28,7 @@ let
   # Returns all the parent mount points of a path (including itself).
   all-parent-mount-points = path:
     builtins.filter (x: builtins.elem x mountpoints)
-                    (all-parents path ++ [path]);
+                    (all-parents path);
 
   # TODO(high): Actually add some wait to check the wait-for-files files are
   # actually present before mounting
