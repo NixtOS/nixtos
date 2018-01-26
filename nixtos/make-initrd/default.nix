@@ -64,9 +64,15 @@ let
 
   # TODO(low): Handle the case where someone was crazy enough to have a mount
   # point *below* /nix/store?
+  # TODO(medium): Make command executed on error configurable
   init = pkgs.writeScript "initrd-init" ''
-    #!${utils}/bin/ash
+    #!${utils}/bin/ash -e
     PATH="${utils}/bin"
+
+    function error_occured() {
+        exec env PATH=$PATH ash
+    }
+    trap error_occured EXIT
 
     echo "Setting up basic environment"
     mount -t devtmpfs none /dev
