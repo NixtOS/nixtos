@@ -6,7 +6,18 @@ with (import ../nixtos { inherit pkgs; });
 build-vm {
   drives = [
     (vm-drive.virtfs-to-store { tag = "store"; })
-    (vm-drive.empty-drive { name = "test.img"; size = "2G"; persist = true; })
+    (vm-drive.guestfish {
+      name = "test.img";
+      persist = true;
+      script = ''
+        disk-create test.img qcow2 2G
+        add test.img
+        run
+        part-init /dev/sda mbr
+        part-add /dev/sda p 2048 -2048
+        mke2fs /dev/sda1
+      '';
+    })
   ];
   os = operating-system {
     block-devices = {
@@ -14,6 +25,7 @@ build-vm {
     };
     filesystems = {
       "/" = filesystem.tmpfs {};
+      "/boot" = filesystem.ext4 { block-device = "/dev/vda1"; };
       "/nix/.ro-store" = filesystem.virtfs { tag = "store"; };
       "/nix/store" = filesystem.overlayfs {
         lower = "/nix/.ro-store";
