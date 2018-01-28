@@ -13,11 +13,11 @@
 let
   name = "vm-${os.name}";
 
-  store = pkgs.runCommand "store-${name}" {
-    exportReferencesGraph = [ "closure" os ];
-  } ''
+  store-paths = pkgs.closureInfo { rootPaths = [ os ]; };
+
+  store = pkgs.runCommand "store-${name}" {} ''
     mkdir $out
-    cp -r $(${pkgs.perl}/bin/perl ${pkgs.pathsFromGraph} closure) $out
+    cp -r $(cat ${store-paths}/store-paths) $out
   '';
 
   drive-builders = pkgs.lib.concatStringsSep "\n" (
