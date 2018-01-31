@@ -35,7 +35,7 @@ let
     mount -t sysfs none /sys
     ${(top.solve-filesystems filesystems).mount-all "/"}
 
-    # TODO: allow configuring what is /bin/sh?
+    # TODO(low): allow configuring what is /bin/sh?
     mkdir -p /bin
     ln -s ${pkgs.bash}/bin/bash /bin/sh
 

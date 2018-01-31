@@ -2,7 +2,7 @@
 
 loaders:
 
-# TODO: handle multiple bootloaders
+# TODO(medium): handle multiple bootloaders
 assert builtins.length loaders == 1;
 
 pkgs.writeScript "install-bootloaders" ''
