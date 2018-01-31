@@ -7,6 +7,8 @@ let
   top = pkgs.lib.recursiveUpdate {
     basic-system = import ./basic-system { inherit pkgs top; };
     block-device = import ./block-device { inherit pkgs top; };
+    bootloader = import ./bootloader { inherit pkgs top; };
+    bootloaders = import ./bootloaders { inherit pkgs top; };
     build-vm = import ./build-vm { inherit pkgs top; };
     files = import ./files { inherit pkgs top; };
     filesystem = import ./filesystem { inherit pkgs top; };

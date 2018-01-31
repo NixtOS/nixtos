@@ -3,7 +3,7 @@
 let pkgs = import <nixpkgs> {}; in
 with (import ../nixtos { inherit pkgs; });
 
-build-vm {
+let
   drives = [
     (vm-drive.virtfs-to-store { tag = "store"; })
     (vm-drive.guestfish {
@@ -19,7 +19,18 @@ build-vm {
       '';
     })
   ];
-  os = operating-system {
+
+  bootloader-install-script = bootloaders [
+    (bootloader.grub-bios {
+      block-device = "/dev/vda";
+      config-dir = "/boot";
+      config-dir-grub-device = "(hd0,msdos1)";
+      config-dir-grub-dir = "/";
+      os = os-with-init (init.runit {});
+    })
+  ];
+
+  os-with-init = init: operating-system {
     block-devices = {
       "/dev/vda" = block-device.virtio-disk {};
     };
@@ -33,7 +44,7 @@ build-vm {
         work = "/nix/.work-store";
       };
     };
-    services = basic-system {} {
+    services = basic-system { inherit init; } {
       example-service = _: [
         { extends = "init";
           data = {
@@ -49,4 +60,23 @@ build-vm {
       ];
     };
   };
+in
+
+build-vm {
+  inherit drives;
+
+  os = os-with-init (_: [ {
+    extends = "kernel";
+    data = {
+      type = "init";
+      command = pkgs.writeScript "init" ''
+        #!${pkgs.bash}/bin/bash
+        export PATH=${pkgs.coreutils}/bin:${pkgs.bash}/bin:${pkgs.grub2}/bin
+
+        echo "---- Run ${bootloader-install-script} to install bootloaders"
+
+        exec bash
+      '';
+    };
+  } ]);
 }
