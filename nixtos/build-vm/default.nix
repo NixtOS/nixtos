@@ -40,7 +40,7 @@ pkgs.writeScript name ''
     -smp ${toString ncpu} \
     -kernel ${os}/kernel \
     -initrd ${os}/initrd \
-    -append 'real-init=${os}/init console=ttyS0 ${extra-cmdline-args}' \
+    -append 'init=${os}/init console=ttyS0 ${extra-cmdline-args}' \
     -serial mon:stdio \
     ${drive-options}
 ''

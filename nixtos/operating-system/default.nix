@@ -24,7 +24,7 @@ let
     map (e: e.script) activation-extenders
   );
 
-  real-init = pkgs.writeScript "real-init" ''
+  init = pkgs.writeScript "init" ''
     #!${pkgs.bash}/bin/bash
     PATH=${pkgs.coreutils}/bin:${pkgs.utillinux}/bin
 
@@ -64,5 +64,5 @@ pkgs.runCommand name {} ''
   mkdir $out
   ln -s ${kernel}/bzImage $out/kernel
   ln -s ${initrd}/initrd $out/initrd
-  ln -s ${real-init} $out/init
+  ln -s ${init} $out/init
 ''

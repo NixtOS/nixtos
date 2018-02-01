@@ -17,7 +17,7 @@ let
     # TODO(medium): Handle grub-reboot
 
     menuentry "NixtOS - Default" {
-      linux ${config-dir-grub-device}/${config-dir-grub-dir}/grub/kernel real-init=${os}/init
+      linux ${config-dir-grub-device}/${config-dir-grub-dir}/grub/kernel init=${os}/init
       initrd ${config-dir-grub-device}/${config-dir-grub-dir}/grub/initrd
     }
   '';

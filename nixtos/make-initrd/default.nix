@@ -82,9 +82,9 @@ let
     echo "Parsing command-line arguments"
     for opt in $(cat /proc/cmdline); do
       case $opt in
-        real-init=*)
-          real_init="$(echo "$opt" | sed 's/.*=//')"
-          echo "Found real init ‘$real_init’"
+        init=*)
+          init="$(echo "$opt" | sed 's/.*=//')"
+          echo "Found init ‘$init’"
           ;;
       esac
     done
@@ -109,7 +109,7 @@ let
     umount /dev
 
     echo "Switching to on-disk init"
-    exec switch_root /real-root $real_init
+    exec switch_root /real-root $init
   '';
 in
 pkgs.makeInitrd {
