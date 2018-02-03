@@ -17,7 +17,8 @@ let
     # TODO(medium): Handle grub-reboot
 
     menuentry "NixtOS - Default" {
-      linux ${config-dir-grub-device}/${config-dir-grub-dir}/grub/kernel init=${os}/init
+      # TODO(high): Remove this console=ttyS0 argument if not requested for
+      linux ${config-dir-grub-device}/${config-dir-grub-dir}/grub/kernel init=${os}/init console=ttyS0
       initrd ${config-dir-grub-device}/${config-dir-grub-dir}/grub/initrd
     }
   '';
