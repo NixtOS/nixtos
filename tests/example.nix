@@ -44,6 +44,10 @@ let
         work = "/nix/.work-store";
       };
     };
+    packages = with pkgs; [
+      bash
+      coreutils
+    ];
     services = basic-system { inherit init; } {
       example-service = _: [
         { extends = "init";
@@ -71,7 +75,7 @@ build-vm {
       type = "init";
       command = pkgs.writeScript "init" ''
         #!${pkgs.bash}/bin/bash
-        export PATH=${pkgs.coreutils}/bin:${pkgs.bash}/bin:${pkgs.grub2}/bin
+        export PATH=${pkgs.grub2}/bin:/run/current-system/sw/bin
 
         echo "---- Run ${bootloader-install-script} to install bootloaders"
 

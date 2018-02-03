@@ -5,6 +5,7 @@
   initrd-modules ? [],
   block-devices,
   filesystems,
+  packages,
   services ? {},
 }:
 
@@ -43,11 +44,17 @@ let
     inherit block-devices filesystems;
   };
 
+  system-packages = pkgs.symlinkJoin {
+    name = "system-packages";
+    paths = packages;
+  };
+
   complete-system = pkgs.runCommand name {} ''
     mkdir $out
 
     ln -s ${kernel}/bzImage $out/kernel
     ln -s ${initrd}/initrd $out/initrd
+    ln -s ${system-packages} $out/sw
 
     cat > $out/init <<EOF
     #!${pkgs.bash}/bin/bash
