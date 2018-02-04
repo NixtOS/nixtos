@@ -67,10 +67,12 @@ let
     mount -t sysfs none /sys
     ${(top.solve-filesystems filesystems).mount-all "/"}
 
+    echo "Setting up basic filesystem"
     # TODO(low): allow configuring what is /bin/sh?
-    mkdir -p /bin
+    mkdir -p /bin /tmp
     ln -s ${pkgs.bash}/bin/bash /bin/sh
 
+    echo "Adding /run/{booted,current}-system symlinks"
     mkdir -p /run
     ln -s $out /run/booted-system
     ln -s $out /run/current-system
