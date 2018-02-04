@@ -4,6 +4,7 @@
   files ? top.files {},
   init ? top.init.runit {},
   users ? top.users.unix {},
+  groups ? top.groups.unix {},
 }:
 
 services:
@@ -11,7 +12,8 @@ services:
 assert !(services ? "files");
 assert !(services ? "init");
 assert !(services ? "users");
+assert !(services ? "groups");
 
 services // {
-  inherit files init users;
+  inherit files init users groups;
 }

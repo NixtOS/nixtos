@@ -4,11 +4,13 @@
 
 extenders:
 
+# TODO(low): Allow for imperative-style user&group definition
 let
   default-user = {
     # ‘user’ has no default value
     # ‘password-hash’ has no default value
-    # TODO(medium): ‘uid’, ‘gid’ have no default value for the time being
+    # TODO(medium): ‘uid’ has no default value for the time being
+    # TODO(medium): ‘gid’ should actually be given by group name
     gecos = "";
     home = "/var/empty";
     shell = "/run/current-system/sw/bin/nologin";

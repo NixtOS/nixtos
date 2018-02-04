@@ -12,6 +12,7 @@ let
     core-system = import ./core-system { inherit pkgs top; };
     files = import ./files { inherit pkgs top; };
     filesystem = import ./filesystem { inherit pkgs top; };
+    groups = import ./groups { inherit pkgs top; };
     make-initrd = import ./make-initrd { inherit pkgs top; };
     init = import ./init { inherit pkgs top; };
     lib = import ./lib { inherit pkgs top; };

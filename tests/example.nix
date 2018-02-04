@@ -71,6 +71,21 @@ build-vm {
           gid = 0;
         };
       } ];
+      test-groups = _: [ {
+        extends = "groups";
+        data = [
+          { type = "group";
+            group = "root";
+            gid = 0;
+            users = [ "root" ];
+          }
+          { type = "group";
+            group = "wheel";
+            gid = 1;
+            users = [ "root" ];
+          }
+        ];
+      } ];
     };
   };
 }
