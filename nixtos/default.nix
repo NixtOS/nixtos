@@ -19,6 +19,7 @@ let
     solve-block-devices = import ./solve-block-devices { inherit pkgs top; };
     solve-filesystems = import ./solve-filesystems { inherit pkgs top; };
     solve-services = import ./solve-services { inherit pkgs top; };
+    users = import ./users { inherit pkgs top; };
     version = import ./version { inherit pkgs top; };
     vm-drive = import ./vm-drive { inherit pkgs top; };
   } hooks;
