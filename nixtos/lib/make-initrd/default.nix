@@ -7,9 +7,9 @@ let
     rootModules = modules;
   };
 
-  solved-block-devices = top.solve-block-devices block-devices;
+  solved-block-devices = top.lib.solve-block-devices block-devices;
 
-  solved-filesystems = top.solve-filesystems filesystems;
+  solved-filesystems = top.lib.solve-filesystems filesystems;
 
   # TODO(medium): add a check so that different libraries imported with the same
   # name couldn't conflict

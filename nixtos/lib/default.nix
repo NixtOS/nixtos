@@ -1,6 +1,11 @@
 { pkgs, top }:
 
-rec {
+{
+  make-initrd = import ./make-initrd { inherit pkgs top; };
+  solve-block-devices = import ./solve-block-devices { inherit pkgs top; };
+  solve-filesystems = import ./solve-filesystems { inherit pkgs top; };
+  solve-services = import ./solve-services { inherit pkgs top; };
+
   # Returns the sorted dependencies of a list of elements.
   #
   # `depends a b` should return true iff `a` depends on `b`

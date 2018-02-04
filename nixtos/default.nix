@@ -13,13 +13,9 @@ let
     files = import ./files { inherit pkgs top; };
     filesystem = import ./filesystem { inherit pkgs top; };
     groups = import ./groups { inherit pkgs top; };
-    make-initrd = import ./make-initrd { inherit pkgs top; };
     init = import ./init { inherit pkgs top; };
     lib = import ./lib { inherit pkgs top; };
     operating-system = import ./operating-system { inherit pkgs top; };
-    solve-block-devices = import ./solve-block-devices { inherit pkgs top; };
-    solve-filesystems = import ./solve-filesystems { inherit pkgs top; };
-    solve-services = import ./solve-services { inherit pkgs top; };
     users = import ./users { inherit pkgs top; };
     version = import ./version { inherit pkgs top; };
     vm-drive = import ./vm-drive { inherit pkgs top; };

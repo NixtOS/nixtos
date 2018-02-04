@@ -13,7 +13,7 @@ assert !(services ? "kernel");
 assert !(services ? "activation-scripts");
 
 let
-  solved-services = top.solve-services services;
+  solved-services = top.lib.solve-services services;
 
   kernel-extenders = solved-services.extenders-for-assert-type "kernel" "init";
   init-command = assert builtins.length kernel-extenders == 1;
@@ -28,7 +28,7 @@ let
     ${builtins.concatStringsSep "\n" (map (e: e.script) activation-extenders)}
   '';
 
-  initrd = top.make-initrd {
+  initrd = top.lib.make-initrd {
     inherit kernel;
 
     modules = pkgs.lib.unique (
@@ -65,7 +65,7 @@ let
     mount -t devtmpfs none /dev
     mount -t proc none /proc
     mount -t sysfs none /sys
-    ${(top.solve-filesystems filesystems).mount-all "/"}
+    ${(top.lib.solve-filesystems filesystems).mount-all "/"}
 
     echo "Setting up basic filesystem"
     # TODO(low): allow configuring what is /bin/sh?
