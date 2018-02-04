@@ -6,6 +6,7 @@ with (import ../nixtos { inherit pkgs; });
 let
   drives = [
     (vm-drive.virtfs-to-store { tag = "store"; })
+    (vm-drive.virtfs { tag = "config"; path = ./example; rw = false; })
     (vm-drive.guestfish {
       name = "test.img";
       persist = true;
@@ -14,23 +15,19 @@ let
         add test.img
         run
         part-init /dev/sda mbr
-        part-add /dev/sda p 2048 -2048
+        part-add /dev/sda p 2048 4096
+        part-add /dev/sda p 4097 -2048
         mke2fs /dev/sda1
+        mke2fs /dev/sda2
       '';
     })
   ];
+in
 
-  bootloader-install-script = bootloaders [
-    (bootloader.grub-bios {
-      block-device = "/dev/vda";
-      config-dir = "/boot";
-      config-dir-grub-device = "(hd0,msdos1)";
-      config-dir-grub-dir = "/";
-      os = os-with-init (init.runit {});
-    })
-  ];
+build-vm {
+  inherit drives;
 
-  os-with-init = init: operating-system {
+  os = operating-system {
     block-devices = {
       "/dev/vda" = block-device.virtio-disk {};
     };
@@ -38,6 +35,7 @@ let
       "/" = filesystem.tmpfs {};
       "/boot" = filesystem.ext4 { block-device = "/dev/vda1"; };
       "/nix/.ro-store" = filesystem.virtfs { tag = "store"; };
+      "/config" = filesystem.virtfs { tag = "config"; };
       "/nix/store" = filesystem.overlayfs {
         lower = "/nix/.ro-store";
         upper = "/nix/.rw-store";
@@ -47,40 +45,21 @@ let
     packages = with pkgs; [
       bash
       coreutils
+      nix
     ];
-    services = basic-system { inherit init; } {
-      example-service = _: [
-        { extends = "init";
-          data = {
-            type = "service";
-            name = "example";
-            script = ''
-              #!${pkgs.bash}/bin/bash
+    services = basic-system {
+      init = _: [ {
+        extends = "kernel";
+        data = {
+          type = "init";
+          command = pkgs.writeScript "init" ''
+            #!${pkgs.bash}/bin/bash
+            export PATH=${pkgs.grub2}/bin:/run/current-system/sw/bin
 
-              echo "This is a test service running! (but dying too early)"
-            '';
-          };
-        }
-      ];
-    };
+            exec bash
+          '';
+        };
+      } ];
+    } { };
   };
-in
-
-build-vm {
-  inherit drives;
-
-  os = os-with-init (_: [ {
-    extends = "kernel";
-    data = {
-      type = "init";
-      command = pkgs.writeScript "init" ''
-        #!${pkgs.bash}/bin/bash
-        export PATH=${pkgs.grub2}/bin:/run/current-system/sw/bin
-
-        echo "---- Run ${bootloader-install-script} to install bootloaders"
-
-        exec bash
-      '';
-    };
-  } ]);
 }
