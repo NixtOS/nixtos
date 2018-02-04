@@ -5,11 +5,11 @@
 # TODO(low): Cleanup this list by moving things to their right place
 let
   top = pkgs.lib.recursiveUpdate {
-    basic-system = import ./basic-system { inherit pkgs top; };
     block-device = import ./block-device { inherit pkgs top; };
     bootloader = import ./bootloader { inherit pkgs top; };
     bootloaders = import ./bootloaders { inherit pkgs top; };
     build-vm = import ./build-vm { inherit pkgs top; };
+    core-system = import ./core-system { inherit pkgs top; };
     files = import ./files { inherit pkgs top; };
     filesystem = import ./filesystem { inherit pkgs top; };
     make-initrd = import ./make-initrd { inherit pkgs top; };

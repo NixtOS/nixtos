@@ -10,7 +10,7 @@ operating-system {
     "/boot" = filesystem.ext4 { block-device = "/dev/vda1"; };
   };
   packages = with pkgs; [ bash coreutils ];
-  services = basic-system {} {
+  services = core-system {} {
     example-service = _: [
       { extends = "init";
         data = {

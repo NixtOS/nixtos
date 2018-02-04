@@ -47,7 +47,7 @@ build-vm {
       coreutils
       nix
     ];
-    services = basic-system {
+    services = core-system {
       init = _: [ {
         extends = "kernel";
         data = {
