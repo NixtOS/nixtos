@@ -63,13 +63,20 @@ build-vm {
     } {
       test-user = _: [ {
         extends = "users";
-        data = {
-          type = "user";
-          user = "root";
-          password-hash = "$5$fl7YR8nFD0jQJ$mja7t27ZM2yTTPwWeotJ2cEumZxk6a5uSiHC8i1PCN."; # "test"
-          uid = 0;
-          gid = 0;
-        };
+        data = [
+          { type = "user";
+            user = "root";
+            password-hash = "$5$fl7YR8nFD0jQJ$mja7t27ZM2yTTPwWeotJ2cEumZxk6a5uSiHC8i1PCN."; # "test"
+            uid = 0;
+            gid = 0;
+          }
+          { type = "user";
+            user = "nixbld1";
+            password-hash = "x";
+            uid = 1;
+            gid = 2;
+          }
+        ];
       } ];
       test-groups = _: [ {
         extends = "groups";
@@ -83,6 +90,11 @@ build-vm {
             group = "wheel";
             gid = 1;
             users = [ "root" ];
+          }
+          { type = "group";
+            group = "nixbld";
+            gid = 2;
+            users = [ "nixbld1" ];
           }
         ];
       } ];
