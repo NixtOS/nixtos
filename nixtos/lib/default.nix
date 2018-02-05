@@ -22,4 +22,15 @@
         builtins.foldl' (acc: elt: acc ++ impl (visited ++ acc) elt) [] elts;
     in
       impl-for-all [] elements;
+
+  # Returns either the union of the two given sets (if they are disjoint), or
+  # the result of the ‘error’ function if they are not, passing it the list of
+  # duplicate attributes
+  disjoint-union = error: a: b:
+    let
+      doubles = pkgs.lib.intersectLists (builtins.attrNames a)
+                                        (builtins.attrNames b);
+    in
+      if doubles == [] then a // b
+      else error doubles;
 }

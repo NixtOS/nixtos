@@ -17,6 +17,7 @@ let
         mkdir $out
       '' + pkgs.lib.concatStringsSep "\n" (
         map (ext:
+          # TODO(medium): compute `name` from the service name + given name
           assert ext.type == "service"; ''
             mkdir "$out/${ext.name}"
 
