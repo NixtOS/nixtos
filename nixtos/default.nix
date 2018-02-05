@@ -16,6 +16,7 @@ let
     init = import ./init { inherit pkgs top; };
     lib = import ./lib { inherit pkgs top; };
     operating-system = import ./operating-system { inherit pkgs top; };
+    tty = import ./tty { inherit pkgs top; };
     users = import ./users { inherit pkgs top; };
     version = import ./version { inherit pkgs top; };
     vm-drive = import ./vm-drive { inherit pkgs top; };
