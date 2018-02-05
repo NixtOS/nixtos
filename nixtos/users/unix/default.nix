@@ -13,7 +13,7 @@ let
     # TODO(medium): ‘gid’ should actually be given by group name
     gecos = "";
     home = "/var/empty";
-    shell = "/run/current-system/sw/bin/nologin";
+    shell = "/run/current-system/sw/bin/nologin"; # TODO(high): this file doesn't actually exist
   };
 
   passwd-list =

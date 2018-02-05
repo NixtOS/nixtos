@@ -56,6 +56,8 @@ build-vm {
           { type = "user";
             user = "root";
             password-hash = "$5$fl7YR8nFD0jQJ$mja7t27ZM2yTTPwWeotJ2cEumZxk6a5uSiHC8i1PCN."; # "test"
+            home = "/root";
+            shell = "/run/current-system/sw/bin/bash";
             uid = 0;
             gid = 0;
           }
