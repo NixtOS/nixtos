@@ -45,21 +45,10 @@ build-vm {
       };
     };
     packages = with pkgs; [
-      bash coreutils curl dhcpcd iproute kmod nix strace
+      bash coreutils curl dhcpcd iproute kmod nix procps pstree strace
     ];
     services = core-system {
-      init = _: [ {
-        extends = "kernel";
-        data = {
-          type = "init";
-          command = pkgs.writeScript "init" ''
-            #!${pkgs.bash}/bin/bash
-            export PATH=${pkgs.grub2}/bin:/run/current-system/sw/bin
-
-            exec bash
-          '';
-        };
-      } ];
+      ttys = { ttyS0 = tty.agetty {}; };
     } {
       test-user = _: [ {
         extends = "users";
