@@ -7,6 +7,7 @@
   cpu ? "host",
   memory ? "1G",
   ncpu ? 1,
+  net ? "none",
   drives,
 }:
 
@@ -27,6 +28,11 @@ let
   drive-options = pkgs.lib.concatStringsSep " \\\n  " (
     map (f: (f { inherit store; }).options) drives
   );
+
+  net-options =
+    if net == "none" then ""
+    else if net == "user" then "-net nic,model=virtio -net user"
+    else throw "Unknown net option ‘${net}’";
 in
 pkgs.writeScript name ''
   #!${pkgs.bash}/bin/bash
@@ -42,5 +48,6 @@ pkgs.writeScript name ''
     -initrd ${os}/initrd \
     -append 'init=${os}/init console=ttyS0 ${extra-cmdline-args}' \
     -serial mon:stdio \
+    ${net-options} \
     ${drive-options}
 ''

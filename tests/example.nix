@@ -27,6 +27,8 @@ in
 build-vm {
   inherit drives;
 
+  net = "user";
+
   os = operating-system {
     block-devices = {
       "/dev/vda" = block-device.virtio-disk {};
@@ -43,9 +45,7 @@ build-vm {
       };
     };
     packages = with pkgs; [
-      bash
-      coreutils
-      nix
+      bash coreutils curl dhcpcd iproute kmod nix strace
     ];
     services = core-system {
       init = _: [ {
