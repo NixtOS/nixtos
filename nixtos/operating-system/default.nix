@@ -44,6 +44,8 @@ let
     inherit block-devices filesystems;
   };
 
+  modules = pkgs.aggregateModules [ kernel ];
+
   system-packages = pkgs.symlinkJoin {
     name = "system-packages";
     paths = packages;
@@ -54,6 +56,7 @@ let
 
     ln -s ${kernel}/bzImage $out/kernel
     ln -s ${initrd}/initrd $out/initrd
+    ln -s ${modules} $out/kernel-modules
     ln -s ${system-packages} $out/sw
 
     cat > $out/init <<EOF
@@ -67,13 +70,12 @@ let
     mount -t sysfs none /sys
     ${(top.lib.solve-filesystems filesystems).mount-all "/"}
 
-    echo "Setting up basic filesystem"
     # TODO(low): allow configuring what is /bin/sh?
-    mkdir -p /bin /tmp
+    echo "Setting up basic filesystem"
+    mkdir -p /bin /tmp /run /var/run
     ln -s ${pkgs.bash}/bin/bash /bin/sh
 
     echo "Adding /run/{booted,current}-system symlinks"
-    mkdir -p /run
     ln -s $out /run/booted-system
     ln -s $out /run/current-system
 
