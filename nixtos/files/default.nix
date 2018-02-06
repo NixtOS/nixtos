@@ -4,22 +4,23 @@
 
 extenders:
 
+let
+  files = top.lib.make-attrset (f:
+    throw "Trying to define the same files at multiple positions: ${builtins.toJSON f}"
+  ) (map (e: { name = e.file; value = e; }) extenders);
+in
 [
   { extends = activation-scripts;
-    data =
-      assert builtins.all (e:
-        1 == pkgs.lib.count (x: x.file == e.file) extenders
-      ) extenders;
-      {
-        type = "script";
-        script = pkgs.lib.concatStringsSep "\n" (map (e:
-          ''mkdir -p "${dirOf e.file}"'' + "\n" + (
-            if e.type == "symlink" then
-              ''ln -s "${e.target}" "${e.file}"''
-            else
-              throw "Unknown type for generating file: ‘${e.type}’"
-          )
-        ) extenders);
-      };
+    data = {
+      type = "script";
+      script = pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (file: d:
+        ''mkdir -p "${dirOf file}"'' + "\n" + (
+          if d.type == "symlink" then
+            ''ln -s "${d.target}" "${file}"''
+          else
+            throw "Unknown type for generating file ‘${file}’: ‘${d.type}’"
+        )
+      ) files);
+    };
   }
 ]
