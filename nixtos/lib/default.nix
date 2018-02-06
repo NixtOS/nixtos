@@ -33,4 +33,14 @@
     in
       if doubles == [] then a // b
       else error doubles;
+
+  # Similar to builtins.listToAttrs, but returns the result of the ‘error’
+  # function if a key is defined multiple times, passing it the list of
+  # duplicate attributes
+  make-attrset = error: list:
+    let
+      doubles = builtins.filter (x: 1 != pkgs.lib.count (y: x == y) list) list;
+    in
+    if builtins.length doubles == 0 then builtins.listToAttrs list
+    else error list;
 }

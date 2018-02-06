@@ -55,5 +55,21 @@ let
       else throw "disjoint-union (…) ${builtins.toJSON x.a} ${builtins.toJSON
       x.b} = ${builtins.toJSON res} when ${builtins.toJSON x.res} was expected"
     ) true disjoint-union-tests;
+
+  make-attrsets-tests = [
+    { l = [ { name = "foo"; value = 1; } { name = "bar"; value = 2; } ];
+      res = { foo = 1; bar = 2; };
+    }
+    { l = [ { name = "foo"; value = 1; } { name = "foo"; value = 1; } ];
+      res = "an error";
+    }
+  ];
+  make-attrsets-result =
+    builtins.foldl' (acc: x:
+      let res = nixtos.lib.make-attrset (_: "an error") x.l; in
+      if res == x.res then acc
+      else throw "make-attrset (…) ${builtins.toJSON x.l} = ${builtins.toJSON
+      res} when ${builtins.toJSON x.res} was expected"
+    ) true make-attrsets-tests;
 in
-  sorted-deps-of-result && disjoint-union-result
+  sorted-deps-of-result && disjoint-union-result && make-attrsets-result
