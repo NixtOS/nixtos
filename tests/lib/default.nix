@@ -20,7 +20,7 @@ let
     { id = 14; deps = [15]; }
     { id = 15; deps = []; }
   ];
-  tests = [
+  sorted-deps-of-tests = [
     { begin = [0]; result = [0]; }
     { begin = [1]; result = [0 1]; }
     { begin = [2]; result = [2]; }
@@ -28,12 +28,32 @@ let
     { begin = [10]; result = [15 14 12 13 11 10]; }
     { begin = [6 3]; result = [2 0 1 3 5 6]; }
   ];
+  sorted-deps-of-result =
+    builtins.foldl' (acc: x:
+      let
+        solved = nixtos.lib.sorted-deps-of deps graph (map (builtins.elemAt graph) x.begin);
+        res = map (x: x.id) solved;
+      in
+      if res == x.result then acc
+      else throw "sorted-deps-of [${toString x.begin}] = [${toString res}] when it should have been [${toString x.result}]"
+    ) true sorted-deps-of-tests;
+
+  disjoint-union-tests = [
+    { a = { foo = 1; };
+      b = { bar = 1; };
+      res = { foo = 1; bar = 1; };
+    }
+    { a = { foo = 1; };
+      b = { bar = 1; foo = 1; };
+      res = "an error";
+    }
+  ];
+  disjoint-union-result =
+    builtins.foldl' (acc: x:
+      let res = nixtos.lib.disjoint-union (_: "an error") x.a x.b; in
+      if res == x.res then acc
+      else throw "disjoint-union (…) ${builtins.toJSON x.a} ${builtins.toJSON
+      x.b} = ${builtins.toJSON res} when ${builtins.toJSON x.res} was expected"
+    ) true disjoint-union-tests;
 in
-builtins.foldl' (acc: x:
-  let
-    solved = nixtos.lib.sorted-deps-of deps graph (map (builtins.elemAt graph) x.begin);
-    res = map (x: x.id) solved;
-  in
-  if res == x.result then acc
-  else throw "sorted-deps-of [${toString x.begin}] = [${toString res}] when it should have been [${toString x.result}]"
-) true tests
+  sorted-deps-of-result && disjoint-union-result
