@@ -50,6 +50,14 @@ build-vm {
     services = core-system {
       ttys = { ttyS0 = tty.agetty {}; };
     } {
+      test-env = _: [ {
+        extends = "pam";
+        data = {
+          type = "env";
+          name = "PATH";
+          value = "/run/current-system/sw/bin";
+        };
+      } ];
       test-user = _: [ {
         extends = "users";
         data = [

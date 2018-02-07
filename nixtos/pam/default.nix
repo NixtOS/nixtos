@@ -5,9 +5,23 @@
   config ? {},
 }:
 
-_: # TODO(medium): Allow adding configuration via extenders
+extenders: # TODO(medium): Allow adding PAM configuration via extenders
 
 let
+  env = top.lib.make-attrset (e:
+    throw "Trying to define the same session environment variable at multiple positions: ${builtins.toJSON e}"
+  ) (builtins.map (e:
+    { name = e.name; value = e; }
+  ) (builtins.filter (e:
+    e.type == "env"
+  ) extenders));
+
+  env-file = pkgs.writeText "pam-env" (
+    builtins.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (var: d:
+      "${var}=${d.value}"
+    ) env)
+  );
+
   cfg = {
     other = ''
       auth      required   pam_warn.so
@@ -31,7 +45,7 @@ let
 
       password requisite pam_unix.so sha512
 
-      # TODO(high): session environment
+      session required pam_env.so envfile=${env-file}
       session required pam_unix.so
       session required pam_loginuid.so
       # TODO(medium): session required pam_lastlog.so
