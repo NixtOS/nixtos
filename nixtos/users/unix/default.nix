@@ -16,6 +16,8 @@ let
     shell = "/run/current-system/sw/bin/nologin"; # TODO(high): this file doesn't actually exist
   };
 
+  # TODO(low): this builtins.all should be a call to lib.make-attrset for better
+  # error reporting
   passwd-list =
     assert builtins.all (e:
       1 == pkgs.lib.count (x: x.user == e.user) extenders &&

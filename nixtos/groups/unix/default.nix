@@ -9,6 +9,8 @@ extenders:
 # ‘extra-groups’ parameter of the user (ie. as extenders).
 # TODO(medium): ‘gid’ should have a default value
 let
+  # TODO(low): this builtins.all should be a call to lib.make-attrset for better
+  # error reporting
   group-list =
     assert builtins.all (e:
       1 == pkgs.lib.count (x: x.group == e.group) extenders &&
