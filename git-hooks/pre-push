@@ -1,0 +1,40 @@
+#!/bin/sh
+
+. "$(dirname $0)/../../git-hooks/check-range-signed.sh"
+
+remote="$1"
+url="$2"
+
+z40=0000000000000000000000000000000000000000
+
+# Prevent pushing unsigned commits
+while read local_ref local_sha remote_ref remote_sha; do
+    echo "Checking push '$local_ref' ('$local_sha') to '$remote_ref' ('$remote_sha')"
+
+    # Skip pushes not to `master`
+    if [ "$remote_ref" != "refs/heads/master" ]; then
+        echo "Push to '$remote_ref' is not to master, allowing it"
+        continue
+    fi
+
+    # Handle deletions
+    if [ "$local_sha" = $z40 ]; then # Deletion
+        echo "Refusing to delete master branch" >&2
+        exit 1
+    fi
+
+    # Handle new branches
+    if [ "$remote_sha" = $z40 ]; then
+        echo "Pushing a new branch to master should not happen..." >&2
+        echo "Ignoring for the time being" >&2
+        continue
+    fi
+
+    if check_range_signed "$remote_sha" "$local_sha"; then
+        echo "Push to master successfully signed!"
+        continue
+    fi
+
+    echo "Unable to check signatures, refusing to push"
+    exit 1
+done
