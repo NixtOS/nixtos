@@ -21,6 +21,9 @@ operating-system {
 
             echo "This is a test service running! (but dying too early)"
           '';
+          log-script = ''
+            #!${pkgs.bash}/bin/bash
+          '';
         };
       }
     ];

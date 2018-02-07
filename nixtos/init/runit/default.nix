@@ -18,6 +18,10 @@ let
       ''
         mkdir $out
       '' + pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (service: d:
+        # TODO(low): Currently this leads to a shell script exec'ing a shell
+        # script exec'ing the result, thus one unneeded level of indirection
+        # TODO(high): The ‘log-script’ thing is tightly linked with runit. It
+        # shouldn't be.
         assert d.type == "service"; ''
           mkdir "$out/${service}"
 
@@ -29,8 +33,15 @@ let
 
           exec ${pkgs.writeScript "runit-init-${service}" d.script}
           EOF
-
           chmod +x "$out/${service}/run"
+
+          mkdir "$out/${service}/log"
+          cat > "$out/${service}/log/run" <<EOF
+          #!${pkgs.bash}/bin/bash
+
+          exec ${pkgs.writeScript "runit-log-${service}" d.log-script}
+          EOF
+          chmod +x "$out/${service}/log/run"
         ''
       ) services)
     );
