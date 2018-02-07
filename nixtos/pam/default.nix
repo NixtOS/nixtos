@@ -48,7 +48,7 @@ let
       session required pam_env.so envfile=${env-file}
       session required pam_unix.so
       session required pam_loginuid.so
-      # TODO(medium): session required pam_lastlog.so
+      session required pam_lastlog.so
     '';
   } // config;
 in

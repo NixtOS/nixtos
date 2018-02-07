@@ -72,7 +72,7 @@ let
 
     # TODO(low): allow configuring what is /bin/sh?
     echo "Setting up basic filesystem"
-    mkdir -p /bin /tmp /run /var/run /root /home
+    mkdir -p /bin /home /root /run /tmp /var/log /var/run
     ln -s ${pkgs.bash}/bin/bash /bin/sh
 
     echo "Adding /run/{booted,current}-system symlinks"

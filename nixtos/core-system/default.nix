@@ -18,6 +18,8 @@
 
 services:
 
+# TODO(high): Handle logging (and add a /dev/log device for stuff used to it)
+
 top.lib.disjoint-union (d:
   throw "Passed service names that were already taken by core system: ${toString d}"
 ) services (
