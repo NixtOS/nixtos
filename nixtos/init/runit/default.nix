@@ -8,32 +8,31 @@
 extenders:
 
 let
+  # TODO(medium): compute `name` from the service name + given name
+  services = top.lib.make-attrset (s:
+    throw "Trying to define the same services at multiple locations: ${builtins.toJSON s}"
+  ) (map (e: { name = e.name; value = e; }) extenders);
+
   services-dir =
-    assert builtins.all (e:
-      1 == pkgs.lib.count (x: x.name == e.name) extenders
-    ) extenders;
     pkgs.runCommand "runit-services" {} (
       ''
         mkdir $out
-      '' + pkgs.lib.concatStringsSep "\n" (
-        map (ext:
-          # TODO(medium): compute `name` from the service name + given name
-          assert ext.type == "service"; ''
-            mkdir "$out/${ext.name}"
+      '' + pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (service: d:
+        assert d.type == "service"; ''
+          mkdir "$out/${service}"
 
-            ln -s "/run/runit/supervise-${ext.name}" \
-                  "$out/${ext.name}/supervise"
+          ln -s "/run/runit/supervise-${service}" \
+                "$out/${service}/supervise"
 
-            cat > "$out/${ext.name}/run" <<EOF
-            #!${pkgs.bash}/bin/bash
+          cat > "$out/${service}/run" <<EOF
+          #!${pkgs.bash}/bin/bash
 
-            exec ${pkgs.writeScript "runit-init-${ext.name}" ext.script}
-            EOF
+          exec ${pkgs.writeScript "runit-init-${service}" d.script}
+          EOF
 
-            chmod +x "$out/${ext.name}/run"
-          ''
-        ) extenders
-      )
+          chmod +x "$out/${service}/run"
+        ''
+      ) services)
     );
 in
 [
