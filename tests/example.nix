@@ -45,7 +45,8 @@ build-vm {
       };
     };
     packages = with pkgs; [
-      bash busybox coreutils curl dhcpcd gnugrep iproute kmod nix procps pstree strace
+      (pkgs.lib.lowPrio busybox)
+      bash coreutils curl dhcpcd gnugrep iproute kmod nix procps pstree strace
     ];
     services = core-system {
       ttys = { ttyS0 = tty.agetty {}; };

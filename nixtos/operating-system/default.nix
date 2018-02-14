@@ -46,9 +46,10 @@ let
 
   modules = pkgs.aggregateModules [ kernel ];
 
-  system-packages = pkgs.symlinkJoin {
+  system-packages = pkgs.buildEnv {
     name = "system-packages";
     paths = packages;
+    ignoreCollisions = true;
   };
 
   complete-system = pkgs.runCommand name {} ''
@@ -78,6 +79,10 @@ let
     echo "Adding /run/{booted,current}-system symlinks"
     ln -s $out /run/booted-system
     ln -s $out /run/current-system
+
+    # TODO: move to an activation script
+    echo "Allowing module autoloading"
+    echo "${pkgs.kmod}/bin/modprobe" > /proc/sys/kernel/modprobe
 
     ${activation-script}
 
