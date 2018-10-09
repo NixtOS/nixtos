@@ -5,6 +5,7 @@ let
   module-closure = pkgs.makeModulesClosure {
     kernel = kernel;
     rootModules = modules;
+    firmware = kernel; # TODO(medium): this should be set-able
   };
 
   solved-block-devices = top.lib.solve-block-devices block-devices;
