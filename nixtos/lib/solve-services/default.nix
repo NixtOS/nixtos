@@ -26,6 +26,8 @@
 # or a list, in which case it is a list of extending blocks that will be passed
 # on to the same extended service.
 
+# TODO(high): replace [ { extends = "e"; data = {} } ] with { "e" = [ {} ] }
+
 { pkgs, top }:
 
 services:
