@@ -10,10 +10,10 @@ rec {
   if builtins.isList arg then groups { name = "groups"; groups = arg; }
   else
     _ignored_extenders:
-    builtins.map (group: {
-      extends = arg.name;
-      data = group // { type = "group"; };
-    }) arg.groups;
+    {
+      ${arg.name} =
+        builtins.map (group: group // { type = "group"; }) arg.groups;
+    };
 
   # Main implementation functor
   # ===========================
@@ -44,13 +44,11 @@ rec {
 
     group-text = pkgs.lib.concatStringsSep "\n" group-list;
   in
-  [
-    { extends = files;
-      data = {
-        type = "symlink";
-        file = "/etc/group";
-        target = pkgs.writeText "group" group-text;
-      };
-    }
-  ];
+  {
+    ${files} = {
+      type = "symlink";
+      file = "/etc/group";
+      target = pkgs.writeText "group" group-text;
+    };
+  };
 }

@@ -11,13 +11,12 @@ rec {
   if builtins.isList arg then env { name = "pam"; vars = arg; }
   else
     _ignored_extenders:
-    builtins.map (var: {
-      extends = arg.name;
-      data = {
+    {
+      ${arg.name} = builtins.map (var: {
         type = "env";
         inherit (var) name value;
-      };
-    }) arg.vars;
+      }) arg.vars;
+    };
 
   # Main implementation functor
   # ===========================
@@ -74,14 +73,12 @@ rec {
       '';
     } // config;
   in
-  [
-    { extends = files;
-      data = pkgs.lib.mapAttrsToList (service: conf:
-        { type = "symlink";
-          file = "/etc/pam.d/${service}";
-          target = pkgs.writeScript "pam-${service}" conf;
-        }
-      ) cfg;
-    }
-  ];
+  {
+    ${files} = pkgs.lib.mapAttrsToList (service: conf:
+      { type = "symlink";
+        file = "/etc/pam.d/${service}";
+        target = pkgs.writeScript "pam-${service}" conf;
+      }
+    ) cfg;
+  };
 }

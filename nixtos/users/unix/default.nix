@@ -10,12 +10,9 @@ rec {
   if builtins.isList arg then users { name = "users"; users = arg; }
   else
     _ignored_extenders:
-    builtins.map (user: {
-      extends = arg.name;
-      data = user // {
-        type = "user";
-      };
-    }) arg.users;
+    {
+      ${arg.name} = builtins.map (user: user // { type = "user"; }) arg.users;
+    };
 
   # Main implementation functor
   # ===========================
@@ -57,23 +54,19 @@ rec {
 
     shadow-text = pkgs.lib.concatStringsSep "\n" shadow-list;
   in
-  [
-    { extends = files;
-      data = {
-        type = "symlink";
+  {
+    ${files} = [
+      { type = "symlink";
         file = "/etc/passwd";
         target = pkgs.writeText "passwd" passwd-text;
-      };
-    }
+      }
 
-    # TODO(high): make /etc/shadow non-world-readable? all the data in it is
-    # accessible from the store anyway, so…
-    { extends = files;
-      data = {
-        type = "symlink";
+      # TODO(high): make /etc/shadow non-world-readable? all the data in it is
+      # accessible from the store anyway, so…
+      { type = "symlink";
         file = "/etc/shadow";
         target = pkgs.writeText "shadow" shadow-text;
-      };
-    }
-  ];
+      }
+    ];
+  };
 }

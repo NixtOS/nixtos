@@ -46,33 +46,22 @@ let
       ) services)
     );
 in
-[
-  { extends = kernel;
-    data = {
-      type = "init";
-      command = "${pkgs.runit}/bin/runit";
-    };
-  }
+{
+  ${kernel} = {
+    type = "init";
+    command = "${pkgs.runit}/bin/runit";
+  };
 
-  { extends = files;
-    data = {
-      type = "symlink";
+  ${files} = [
+    { type = "symlink";
       file = "/etc/runit/1";
       target = pkgs.writeScript "runit-1" "#!${pkgs.bash}/bin/bash";
-    };
-  }
-
-  { extends = files;
-    data = {
-      type = "symlink";
+    }
+    { type = "symlink";
       file = "/etc/runit/3";
       target = pkgs.writeScript "runit-3" "#!${pkgs.bash}/bin/bash";
-    };
-  }
-
-  { extends = files;
-    data = {
-      type = "symlink";
+    }
+    { type = "symlink";
       file = "/etc/runit/2";
       target = pkgs.writeScript "runit-2" ''
         #!${pkgs.bash}/bin/bash
@@ -82,6 +71,6 @@ in
         exec ${pkgs.coreutils}/bin/env PATH=${pkgs.runit}/bin \
              ${pkgs.runit}/bin/runsvdir -P ${services-dir}
       '';
-    };
-  }
-]
+    }
+  ];
+}
