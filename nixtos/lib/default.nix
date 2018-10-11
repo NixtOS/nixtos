@@ -5,6 +5,7 @@
   solve-block-devices = import ./solve-block-devices { inherit pkgs top; };
   solve-filesystems = import ./solve-filesystems { inherit pkgs top; };
   solve-services = import ./solve-services { inherit pkgs top; };
+  types = import ./types { inherit pkgs top; };
 
   # Returns the sorted dependencies of a list of elements.
   #
