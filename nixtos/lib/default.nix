@@ -39,7 +39,9 @@
   # duplicate attributes
   make-attrset = error: list:
     let
-      doubles = builtins.filter (x: 1 != pkgs.lib.count (y: x == y) list) list;
+      doubles = builtins.filter (x:
+        1 != pkgs.lib.count (y: x.name == y.name) list
+      ) list;
     in
     if builtins.length doubles == 0 then builtins.listToAttrs list
     else error list;

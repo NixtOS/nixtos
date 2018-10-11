@@ -14,4 +14,9 @@ testbed.run {
     expr = make-attrset (_: "error") [ (nv "foo" 1) (nv "foo" 1) ];
     expected = "error";
   };
+
+  incorrect-set-bis = {
+    expr = make-attrset (_: "error") [ (nv "foo" 1) (nv "foo" 2) ];
+    expected = "error";
+  };
 }
