@@ -1,24 +1,6 @@
 { pkgs, nixtos }:
 
 let
-  disjoint-union-tests = [
-    { a = { foo = 1; };
-      b = { bar = 1; };
-      res = { foo = 1; bar = 1; };
-    }
-    { a = { foo = 1; };
-      b = { bar = 1; foo = 1; };
-      res = "an error";
-    }
-  ];
-  disjoint-union-result =
-    builtins.foldl' (acc: x:
-      let res = nixtos.lib.disjoint-union (_: "an error") x.a x.b; in
-      if res == x.res then acc
-      else throw "disjoint-union (…) ${builtins.toJSON x.a} ${builtins.toJSON
-      x.b} = ${builtins.toJSON res} when ${builtins.toJSON x.res} was expected"
-    ) true disjoint-union-tests;
-
   make-attrsets-tests = [
     { l = [ { name = "foo"; value = 1; } { name = "bar"; value = 2; } ];
       res = { foo = 1; bar = 2; };
@@ -38,6 +20,7 @@ let
   # Types used here:
   #   test = { expr, expected }
   #   test-result = { name, expected, result } WHERE expected != result
+  # TODO(low): catch throws with builtins.tryEval
   testbed = {
     # map string test -> list test-result
     run = tests:
@@ -63,5 +46,6 @@ let
 in
   testbed.recurse {
     sorted-deps-of = import ./sorted-deps-of.nix;
+    disjoint-union = import ./disjoint-union.nix;
   }
   # TODO(high): disjoint-union-result && make-attrsets-result;
