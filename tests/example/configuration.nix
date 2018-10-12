@@ -1,3 +1,4 @@
+# TODO(low): this example is outdated
 let pkgs = import <nixpkgs> {}; in
 with (import ../../nixtos { inherit pkgs; });
 
