@@ -3,7 +3,8 @@
 {
   kernel ? "kernel",
   files ? "files",
-}:
+  assertions ? "assertions",
+} @ args:
 
 extenders:
 
@@ -47,6 +48,16 @@ let
     );
 in
 {
+  ${assertions} = with top.lib.types;
+    assert-type "nixtos.init.runit's argument" args (product-opt {
+      req = {};
+      opt = {
+        kernel = string;
+        files = string;
+        assertions = string;
+      };
+    });
+
   ${kernel} = {
     type = "init";
     command = "${pkgs.runit}/bin/runit";
