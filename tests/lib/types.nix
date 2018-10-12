@@ -125,28 +125,28 @@ in testbed.run ({
     (err (product {}) { name = "hans"; });
 
   testProductOptOk = test
-    (productOpt { req = { a = unit; }; opt = { b = unit; }; })
+    (product-opt { req = { a = unit; }; opt = { b = unit; }; })
     { a = {}; b = {}; } ok;
   testProductOptNoOptOk = test
-    (productOpt { req = { a = unit; }; opt = { b = unit; }; })
+    (product-opt { req = { a = unit; }; opt = { b = unit; }; })
     { a = {}; } ok;
   testProductOnlyOptNoReq = test
-    (productOpt { req = { a = unit; }; opt = { b = unit; }; })
+    (product-opt { req = { a = unit; }; opt = { b = unit; }; })
     { b = {}; }
-    (err (productOpt { req = { a = unit; }; opt = { b = unit; }; }) { b = {}; }) ;
+    (err (product-opt { req = { a = unit; }; opt = { b = unit; }; }) { b = {}; }) ;
   testProductOnlyOptOk = test
-    (productOpt { req = {}; opt = { x = unit; y = unit; }; })
+    (product-opt { req = {}; opt = { x = unit; y = unit; }; })
     { y = {}; } ok;
   testProductInProductOpt = test
-    (productOpt { req = {}; opt = { p = product { x = int; y = bool; }; }; })
+    (product-opt { req = {}; opt = { p = product { x = int; y = bool; }; }; })
     { p = { x = 23; }; } # missing the required p.y
     { p = (err (product { x = int; y = bool; }) { x = 23; }); };
 
   testProductOptOpenOk = test
-    (productOpt { req = { a = unit; }; opt = {}; open = true; })
+    (product-opt { req = { a = unit; }; opt = {}; open = true; })
     { a = {}; rest1 = 12; rest2 = "foo"; } ok;
   testProductOptOpenIgnoreRest = test
-    (productOpt { req = { a = unit; }; opt = { b = int; }; open = true; })
+    (product-opt { req = { a = unit; }; opt = { b = int; }; open = true; })
     { a = 23; b = false; rest = "foo"; x = {}; y = 23; }
     { a = err unit 23; b = err int false; };
 

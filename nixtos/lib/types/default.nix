@@ -282,23 +282,23 @@ let
   #   { }
   # product { foo = void; }:
   #   just kidding. :)
-  product = fields: productOpt { req = fields; opt = {}; };
+  product = fields: product-opt { req = fields; opt = {}; };
 
   # product type with the possibility of optional fields
   # actually the more generic type of product, BUT:
   # code with a fixed number of fields is less brittle.
   # choose wisely.
-  # productOpt { req = {}; opt = { a = unit; b = int; }:
+  # product-opt { req = {}; opt = { a = unit; b = int; }:
   #   { }
   #   { a = {}; }
   #   { a = {}; b = 23; }
   # if a product is `open`, any fields that are not
   # given a type in either `req` or `opt` will default
   # to type `any` (that is they typecheck by default).
-  # productOpt { req = { a = int; }; opt = {}; open = true; }
+  # product-opt { req = { a = int; }; opt = {}; open = true; }
   #   { a = 23; }
   #   { a = 42; b = "foo"; c = false; }
-  productOpt = { req, opt, open ? false }:
+  product-opt = { req, opt, open ? false }:
     let reqfs = builtins.attrNames req;
         optfs = builtins.attrNames opt; in
     # opt and rec fields must not contain the same fields
@@ -445,7 +445,7 @@ in {
   # Constructor functions for types.
   # Their internal structure/fields are an *implementation detail*.
   inherit void any unit bool string path int float
-          list attrs product productOpt sum union
+          list attrs product product-opt sum union
           restrict;
   # Type checking.
   inherit check-type;
