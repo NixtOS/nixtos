@@ -15,12 +15,12 @@ let
   # a successful type check
   ok = {};
 
-  # Test the checkType function results.
+  # Test the check-type function results.
   # type is the type to check for
   # val is the value that should be of type type
-  # result is the expected checkType result
+  # result is the expected check-type result
   test = type: val: result: {
-    expr = checkType type val;
+    expr = check-type type val;
     expected = result;
   };
 
@@ -29,7 +29,7 @@ let
     expected = result;
   };
 
-  # TODO test the return type of checkType to be
+  # TODO test the return type of check-type to be
   # nested attrs (product { should = string; val = any; })
 
 in testbed.run ({

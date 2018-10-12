@@ -18,7 +18,7 @@
 # does *not* do a recursive check for complex types/values.
 # Plus, it is not possible to catch a type error, since the module
 # system always instantly aborts nix evaluation on type error.
-# The `checkType` function in this module returns a detailed,
+# The `check-type` function in this module returns a detailed,
 # structured # error for each part of the substructure that
 # does not match the given expected type.
 # Concerning expressibility, an attrset with fixed fields can
@@ -32,7 +32,7 @@
 # If you want to check a plain (possibly complex) nix value,
 # use this module.
 #
-# The main function is `checkType`.
+# The main function is `check-type`.
 # Tests can be found in './tests/types-simple.nix`.
 
 { pkgs, top }:
@@ -93,16 +93,16 @@ let
 
   # Main type checking function.
   # Example:
-  # > checkType (list string) [ "foo" "bar" ]
+  # > check-type (list string) [ "foo" "bar" ]
   # { }
-  # > checkType (list string) [ "foo" 42 ]
+  # > check-type (list string) [ "foo" 42 ]
   # { "1" = { should = "string"; val = 42; }; }
   #
-  # checkType :: Fix Type -> Value -> (Nested Attrs) Errors
+  # check-type :: Fix Type -> Value -> (Nested Attrs) Errors
   #
   # where { } means no error (the given value is of the given type)
   # and { should : String, val : Value } denotes a type mismatch.
-  checkType =
+  check-type =
     let
       # the type check suceeded
       ok = {};
@@ -423,11 +423,11 @@ let
   # TODO: pattern match function
   # match =
 
-  # Feed it the output of checkType (after testing for success (== {})
+  # Feed it the output of check-type (after testing for success (== {})
   # and it returns a more or less pretty string of errors.
   prettyPrintErrors =
     let
-      isLeaf = v: {} == checkType (product { should = string; val = any; }) v;
+      isLeaf = v: {} == check-type (product { should = string; val = any; }) v;
       recurse = path: errs:
         if isLeaf errs
         then [{ inherit path; inherit (errs) should val; }]
@@ -448,7 +448,7 @@ in {
           list attrs product productOpt sum union
           restrict;
   # Type checking.
-  inherit checkType;
+  inherit check-type;
   # Functions.
   inherit prettyPrintErrors;
 }
