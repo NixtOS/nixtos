@@ -15,6 +15,18 @@ assert !(services ? "activation-scripts");
 let
   solved-services = top.lib.solve-services services;
 
+  assertion-extenders =
+    solved-services.extenders-for-assert-type "assertions" "assertion-failure";
+  assert-assertions =
+    if assertion-extenders == [] then {}
+    else throw ''
+      Assertions failed:
+
+      ${builtins.concatStringsSep "\n" (
+        builtins.map (a: " * ${a.message}") assertion-extenders
+      )}
+    '';
+
   kernel-extenders = solved-services.extenders-for-assert-type "kernel" "init";
   init-command = assert builtins.length kernel-extenders == 1;
                  (builtins.head kernel-extenders).command;
@@ -91,4 +103,4 @@ let
     chmod +x $out/init
   '';
 in
-  complete-system
+  builtins.seq assert-assertions complete-system
