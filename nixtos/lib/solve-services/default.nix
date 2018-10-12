@@ -49,7 +49,7 @@ let
   );
 
   # extenders-for: service-name -> list extending-block
-  extenders-for = service: all-extenders.${service};
+  extenders-for = service: all-extenders.${service} or [];
 
   # TODO(medium) This should be moved to the simplified handling of extenders
   extenders-for-assert-type = service: type:

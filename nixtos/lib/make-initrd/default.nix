@@ -8,6 +8,7 @@ let
     firmware = kernel; # TODO(medium): this should be set-able
   };
 
+  # TODO(medium): allow making a block device from a file (eg. loopback)
   solved-block-devices = top.lib.solve-block-devices block-devices;
 
   solved-filesystems = top.lib.solve-filesystems filesystems;
