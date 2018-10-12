@@ -23,7 +23,9 @@ let
       Assertions failed:
 
       ${builtins.concatStringsSep "\n" (
-        builtins.map (a: " * ${a.message}") assertion-extenders
+        builtins.map (a: " * ${
+          builtins.replaceStrings ["\n"] ["\n   "] a.message
+        }") assertion-extenders
       )}
     '';
 
