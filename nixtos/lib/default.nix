@@ -7,6 +7,8 @@
   solve-services = import ./solve-services { inherit pkgs top; };
   types = import ./types { inherit pkgs top; };
 
+  # Asserts type
+
   # Returns the sorted dependencies of a list of elements.
   #
   # `depends a b` should return true iff `a` depends on `b`

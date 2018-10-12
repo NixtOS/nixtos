@@ -146,6 +146,16 @@ let
     # but just `cata alg` would be very confusing ;)
     in t: v: cata alg t v;
 
+  # assert-type: assert that the type of `value` is `type`, complaining as
+  # `name` otherwise
+  assert-type = name: value: type:
+    let res = check-type type value; in
+    if res == {} then []
+    else [ {
+      type = "assertion-failure";
+      message = prettyPrintErrors name res;
+    } ];
+
 
   ## -- TYPE SETUP STUFF --
 
@@ -436,7 +446,7 @@ let
       pretty = { path, should, val }:
         "${lib.concatStringsSep "." path} should be: ${
           should}\nbut is: ${lib.generators.toPretty {} val}";
-    in errs: lib.concatMapStringsSep "\n" pretty (recurse [] errs);
+    in name: errs: lib.concatMapStringsSep "\n" pretty (recurse [name] errs);
 
 in {
   # The type of nix types, as non-recursive functor.
@@ -448,7 +458,7 @@ in {
           list attrs product product-opt sum union
           restrict;
   # Type checking.
-  inherit check-type;
+  inherit check-type assert-type;
   # Functions.
   inherit prettyPrintErrors;
 }
