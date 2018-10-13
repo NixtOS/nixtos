@@ -1,14 +1,24 @@
 { pkgs, top }:
 
 {
+  assertions ? "assertions",
   kernel ? "kernel",
   files ? "files",
-  assertions ? "assertions",
 } @ args:
 
 extenders:
 
 let
+  asserts = with top.lib.types;
+    assert-type "nixtos.init.runit's argument" args (product-opt {
+      req = {};
+      opt = {
+        kernel = string;
+        files = string;
+        assertions = string;
+      };
+    });
+
   # TODO(medium): compute `name` from the service name + given name
   services = top.lib.make-attrset (s:
     throw "Trying to define the same services at multiple locations: ${builtins.toJSON s}"
@@ -48,15 +58,7 @@ let
     );
 in
 {
-  ${assertions} = with top.lib.types;
-    assert-type "nixtos.init.runit's argument" args (product-opt {
-      req = {};
-      opt = {
-        kernel = string;
-        files = string;
-        assertions = string;
-      };
-    });
+  ${assertions} = asserts;
 
   ${kernel} = {
     type = "init";
