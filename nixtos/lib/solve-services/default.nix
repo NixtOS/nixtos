@@ -39,6 +39,34 @@
 
 # TODO(high): simplify handling of extenders for extended modules
 
+# TODO(low): consider toposorting instead of fixpoint, for error msg & speed?
+
+# TODO(medium): add a callPackage equivalent to avoid writing `dbus = "dbus"`
+
+# TODO(low): consider adding lazy modules
+# The point is to avoid the need for the user to have lines like
+#   dbus = services.dbus {};
+# in their configuration. The idea, for implementation, would be to split the
+# “lazy” service set from the user-defined service set, and to use the
+# callPackage-like (defined from the to-do item above) to automatically detect
+# which dependencies are required.
+# Then first do a DFS through the lazy//user package set to identify which
+# dependencies are required, and second do the service solving from this service
+# set.
+# This is to be done iff some people express real-life annoyance at being forced
+# to write explicitly all dependencies. But we must be ready to make this change
+# at any point in time, without breaking anything else.
+
+########################################################################
+#                                                                      #
+#             YOU WHO ENTER HERE WISHING TO MODIFY STUFF               #
+#                                                                      #
+# READ THE ABOVE TO-DO ITEMS AND MAKE SURE NOT TO MAKE THEM IMPOSSIBLE #
+#                                                                      #
+#              IMPLEMENTATION SIMPLICITY IS A STRENGTH                 #
+#                                                                      #
+########################################################################
+
 { pkgs, top }:
 
 # services: map service-name service
