@@ -2,6 +2,7 @@
 
 {
   make-initrd = import ./make-initrd { inherit pkgs top; };
+  merges = import ./merges { inherit pkgs top; };
   solve-block-devices = import ./solve-block-devices { inherit pkgs top; };
   solve-filesystems = import ./solve-filesystems { inherit pkgs top; };
   solve-services = import ./solve-services { inherit pkgs top; };

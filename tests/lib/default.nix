@@ -47,6 +47,7 @@ in
   testbed.recurse {
     disjoint-union = import ./disjoint-union.nix;
     make-attrset = import ./make-attrset.nix;
+    merges = import ./merges.nix;
     sorted-deps-of = import ./sorted-deps-of.nix;
     types = import ./types.nix;
   }
