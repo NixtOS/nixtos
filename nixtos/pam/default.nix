@@ -1,22 +1,7 @@
 { pkgs, top }:
 
 rec {
-  # Configuration helpers
-  # =====================
-
-  # env : ({ name:string, vars:list var } | list var) -> service
-  # where var = { name:string, value:string }
-  # TODO(low): typecheck?
-  env = arg:
-  if builtins.isList arg then env { name = "pam"; vars = arg; }
-  else
-    _ignored_extenders:
-    {
-      ${arg.name} = builtins.map (var: {
-        meta.type = "env";
-        inherit (var) name value;
-      }) arg.vars;
-    };
+  env = import ./env.nix { inherit pkgs top; };
 
   # Main implementation functor
   # ===========================

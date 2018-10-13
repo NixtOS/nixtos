@@ -51,10 +51,11 @@ build-vm {
     services = core-system {
       ttys = { ttyS0 = tty.agetty {}; };
     } {
-      test-env = pam.env [ { # TODO(high): this should be by default
-        name = "PATH";
-        value = "/run/current-system/sw/bin";
-      } ];
+      test-env = pam.env { # TODO(high): this should be by default
+        vars = {
+          PATH = "/run/current-system/sw/bin";
+        };
+      };
       test-users = users.unix.users [ # TODO(high): this should find a home somewhere
         { user = "root";
           password-hash = "$5$fl7YR8nFD0jQJ$mja7t27ZM2yTTPwWeotJ2cEumZxk6a5uSiHC8i1PCN."; # "test"
