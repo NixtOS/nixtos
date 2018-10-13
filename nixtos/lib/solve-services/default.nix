@@ -47,16 +47,32 @@
 services:
 
 let
+  # sanitize-extension: service-name -> service-extension
+  #                     -> list extending-block
+  #
+  # Adds the `meta.source` attribute (and wraps in a list if need be)
+  sanitize-extension = source: ext:
+    builtins.map (e:
+      e // { meta = e.meta // { inherit source; }; }
+    ) (
+      if builtins.isList ext then ext
+      else [ ext ]
+    );
+
+  # all-extenders-from-service: service-name -> service
+  #                             -> map service-name (list extending-block)
+  #
+  # All the extenders that one service generates, sanitized
+  all-extenders-from-service = source: service:
+    pkgs.lib.mapAttrs (_: ext:
+      sanitize-extension source ext
+    ) (service (extenders-for source));
+
   # all-extenders: map service-name (list extending-block)
+  #
+  # All the extenders, grouped by extended service
   all-extenders = pkgs.lib.foldAttrs (n: a: n ++ a) [] (
-    pkgs.lib.mapAttrsToList (name: service:
-      pkgs.lib.mapAttrs (_: value:
-        builtins.map (e: e // { meta = e.meta // { source = name; }; }) (
-          if builtins.isList value then value
-          else [ value ]
-        )
-      ) (service (extenders-for name))
-    ) services
+    pkgs.lib.mapAttrsToList all-extenders-from-service services
   );
 
   # extenders-for: service-name -> list extending-block
