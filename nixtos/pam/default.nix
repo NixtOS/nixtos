@@ -13,7 +13,7 @@ rec {
     _ignored_extenders:
     {
       ${arg.name} = builtins.map (var: {
-        type = "env";
+        meta.type = "env";
         inherit (var) name value;
       }) arg.vars;
     };
@@ -34,7 +34,7 @@ rec {
     ) (builtins.map (e:
       { name = e.name; value = e; }
     ) (builtins.filter (e:
-      e.type == "env"
+      e.meta.type == "env"
     ) extenders));
 
     env-file = pkgs.writeText "pam-env" (
@@ -75,7 +75,7 @@ rec {
   in
   {
     ${files} = pkgs.lib.mapAttrsToList (service: conf:
-      { type = "symlink";
+      { meta.type = "symlink";
         file = "/etc/pam.d/${service}";
         target = pkgs.writeScript "pam-${service}" conf;
       }

@@ -152,7 +152,7 @@ let
     let res = check-type type value; in
     if res == {} then []
     else [ {
-      type = "assertion-failure";
+      meta.type = "assertion-failure";
       message = prettyPrintErrors name res;
     } ];
 

@@ -12,7 +12,7 @@ extenders:
 
 {
   ${init} = {
-    type = "service";
+    meta.type = "service";
     name = "agetty-${tty}";
     script = ''
       #!${pkgs.bash}/bin/bash

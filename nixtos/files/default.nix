@@ -23,10 +23,10 @@ in
     });
 
   ${activation-scripts} = {
-    type = "script";
+    meta.type = "script";
     script = pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (file: d:
       ''mkdir -p "${dirOf file}"'' + "\n" + (
-        if d.type == "symlink" then
+        if d.meta.type == "symlink" then
           ''ln -s "${d.target}" "${file}"''
         else
           throw "Unknown type for generating file ‘${file}’: ‘${d.type}’"

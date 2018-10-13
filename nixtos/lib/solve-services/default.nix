@@ -8,11 +8,11 @@
 # extending blocks that will be passed on to the extended service.
 #
 # An extending block, also called extender, is defined as a map of the format:
-#   { type = "..."; # The type of the data, as a string
-#     ...           # The data contained
+#   { meta.type = "..."; # The type of the data, as a string
+#     ...                # The data contained
 #   }
 #
-# The "type" argument can be one of the following:
+# The "meta.type" argument can be one of the following:
 #  * "init": Init service, with a `command` argument
 #  * "script": Script, with a `script` argument
 #  * "symlink": Symlink, with `file` and `target` arguments
@@ -21,12 +21,17 @@
 #  * Anything with a ':' in it, which is defined and used outside of NixtOS. A
 #    user should prefix his types with 'user:' for personal use, and services
 #    distributed for further use should be prefixed with 'domain.example.org:'
+#
+# `meta` is further reserved for future NixtOS usage.
 
 # TODO(high): think about reverse-dependencies. Current idea:
 #   rec {
 #     logger = logger { ... };
 #     foo = foo { logger = logger.interface; ... };
 #   }
+# Issue: HEAVY! don't want to pass the logger everywhere.
+# Other idea: make it a two-step fix-point, first propagating
+# reverse-dependencies, then extenders.
 
 # TODO(high): simplify handling of extenders for extended modules
 
@@ -53,7 +58,7 @@ let
 
   # TODO(medium) This should be moved to the simplified handling of extenders
   extenders-for-assert-type = service: type:
-    map (e: assert e.type == type; e) (extenders-for service);
+    map (e: assert e.meta.type == type; e) (extenders-for service);
 in
 {
   inherit extenders-for extenders-for-assert-type;

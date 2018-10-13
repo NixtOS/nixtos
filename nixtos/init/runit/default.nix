@@ -33,7 +33,7 @@ let
         # script exec'ing the result, thus one unneeded level of indirection
         # TODO(high): The ‘log-script’ thing is tightly linked with runit. It
         # shouldn't be.
-        assert d.type == "service"; ''
+        assert d.meta.type == "service"; ''
           mkdir "$out/${service}"
 
           ln -s "/run/runit/supervise-${service}" \
@@ -61,20 +61,20 @@ in
   ${assertions} = asserts;
 
   ${kernel} = {
-    type = "init";
+    meta.type = "init";
     command = "${pkgs.runit}/bin/runit";
   };
 
   ${files} = [
-    { type = "symlink";
+    { meta.type = "symlink";
       file = "/etc/runit/1";
       target = pkgs.writeScript "runit-1" "#!${pkgs.bash}/bin/bash";
     }
-    { type = "symlink";
+    { meta.type = "symlink";
       file = "/etc/runit/3";
       target = pkgs.writeScript "runit-3" "#!${pkgs.bash}/bin/bash";
     }
-    { type = "symlink";
+    { meta.type = "symlink";
       file = "/etc/runit/2";
       target = pkgs.writeScript "runit-2" ''
         #!${pkgs.bash}/bin/bash

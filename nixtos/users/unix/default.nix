@@ -11,7 +11,8 @@ rec {
   else
     _ignored_extenders:
     {
-      ${arg.name} = builtins.map (user: user // { type = "user"; }) arg.users;
+      ${arg.name} =
+        builtins.map (user: user // { meta.type = "user"; }) arg.users;
     };
 
   # Main implementation functor
@@ -43,7 +44,7 @@ rec {
         1 == pkgs.lib.count (x: x.uid == e.uid) extenders
       ) extenders;
       map (ext:
-        assert ext.type == "user";
+        assert ext.meta.type == "user";
         let e = default-user // ext; in
         "${e.user}:x:${toString e.uid}:${toString e.gid}:${e.gecos}:${e.home}:${e.shell}"
       ) extenders;
@@ -56,14 +57,14 @@ rec {
   in
   {
     ${files} = [
-      { type = "symlink";
+      { meta.type = "symlink";
         file = "/etc/passwd";
         target = pkgs.writeText "passwd" passwd-text;
       }
 
       # TODO(high): make /etc/shadow non-world-readable? all the data in it is
       # accessible from the store anyway, so…
-      { type = "symlink";
+      { meta.type = "symlink";
         file = "/etc/shadow";
         target = pkgs.writeText "shadow" shadow-text;
       }

@@ -12,7 +12,7 @@ rec {
     _ignored_extenders:
     {
       ${arg.name} =
-        builtins.map (group: group // { type = "group"; }) arg.groups;
+        builtins.map (group: group // { meta.type = "group"; }) arg.groups;
     };
 
   # Main implementation functor
@@ -37,7 +37,7 @@ rec {
         1 == pkgs.lib.count (x: x.gid == e.gid) extenders
       ) extenders;
       map (e:
-        assert e.type == "group";
+        assert e.meta.type == "group";
         let users = pkgs.lib.concatStringsSep "," e.users; in
         "${e.group}:x:${toString e.gid}:${users}"
       ) extenders;
@@ -46,7 +46,7 @@ rec {
   in
   {
     ${files} = {
-      type = "symlink";
+      meta.type = "symlink";
       file = "/etc/group";
       target = pkgs.writeText "group" group-text;
     };
