@@ -1,6 +1,9 @@
 { pkgs, top }:
 
-{ activation-scripts ? "activation-scripts" }:
+{
+  assertions ? "assertions",
+  activation-scripts ? "activation-scripts",
+} @ args:
 
 extenders:
 
@@ -10,6 +13,15 @@ let
   ) (map (e: { name = e.file; value = e; }) extenders);
 in
 {
+  ${assertions} = with top.lib.types;
+    assert-type "nixtos.files's argument" args (product-opt {
+      req = {};
+      opt = {
+        assertions = string;
+        activation-scripts = string;
+      };
+    });
+
   ${activation-scripts} = {
     type = "script";
     script = pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (file: d:
