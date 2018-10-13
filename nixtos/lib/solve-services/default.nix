@@ -22,7 +22,11 @@
 #    user should prefix his types with 'user:' for personal use, and services
 #    distributed for further use should be prefixed with 'domain.example.org:'
 #
-# `meta` is further reserved for future NixtOS usage.
+# `meta` is further reserved for future NixtOS usage. All other fields can be
+# user-defined.
+#
+# When receiving an extender, `meta.source` will be set to the name of the
+# service that generated said extender.
 
 # TODO(high): think about reverse-dependencies. Current idea:
 #   rec {
@@ -46,14 +50,18 @@ let
   # all-extenders: map service-name (list extending-block)
   all-extenders = pkgs.lib.foldAttrs (n: a: n ++ a) [] (
     pkgs.lib.mapAttrsToList (name: service:
-      pkgs.lib.mapAttrs (_: value: # TODO(low): consider removing if perf is hit
-        if builtins.isList value then value
-        else [ value ]
+      pkgs.lib.mapAttrs (_: value:
+        builtins.map (e: e // { meta = e.meta // { source = name; }; }) (
+          if builtins.isList value then value
+          else [ value ]
+        )
       ) (service (extenders-for name))
     ) services
   );
 
   # extenders-for: service-name -> list extending-block
+  #
+  # List of all the extenders that target service `service`
   extenders-for = service: all-extenders.${service} or [];
 
   # TODO(medium) This should be moved to the simplified handling of extenders
