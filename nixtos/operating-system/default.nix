@@ -23,9 +23,10 @@ let
       Assertions failed:
 
       ${builtins.concatStringsSep "\n" (
-        builtins.map (a: " * ${
+        builtins.map (a:
+          " * In service '${a.meta.source}':\n   " +
           builtins.replaceStrings ["\n"] ["\n   "] a.message
-        }") assertion-extenders
+        ) assertion-extenders
       )}
     '';
 
