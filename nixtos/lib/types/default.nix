@@ -218,6 +218,11 @@ let
     check = v: v == {};
   };
 
+  const = value: mkScalar {
+    description = "const ${lib.generators.toPretty {} value}";
+    check = v: v == value;
+  };
+
   # the type with two inhabitants
   bool = mkScalar {
     description = "boolean";
@@ -454,9 +459,9 @@ in {
   Type = { inherit variants fmap cata; };
   # Constructor functions for types.
   # Their internal structure/fields are an *implementation detail*.
-  inherit void any unit bool string path int float
-          list attrs product product-opt sum union
-          restrict;
+  inherit void any unit const bool string path int
+          float list attrs product product-opt sum
+          union restrict;
   # Type checking.
   inherit check-type assert-type;
   # Functions.

@@ -46,6 +46,12 @@ in testbed.run ({
   testUnitOk = test unit {} ok;
   testUnitFoo = test unit "foo" (err unit "foo");
 
+  testConstOk = test (const "foo") "foo" ok;
+  testConstRecOk = test (const { a = "bar"; }) { a = "bar"; } ok;
+  testConstNok = test (const "foo") 42 (err (const "foo") 42);
+  testConstRecNok = let t = const { a = "bar"; }; v = { a = "foo"; }; in
+    test t v (err t v);
+
   testBoolOk = test bool true ok;
   testBoolFoo = test bool 23 (err bool 23);
 
