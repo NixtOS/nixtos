@@ -17,6 +17,7 @@ let
     lib = import ./lib { inherit pkgs top; };
     operating-system = import ./operating-system { inherit pkgs top; };
     pam = import ./pam { inherit pkgs top; };
+    service-graph = import ./service-graph { inherit pkgs top; };
     tty = import ./tty { inherit pkgs top; };
     users = import ./users { inherit pkgs top; };
     version = import ./version { inherit pkgs top; };

@@ -113,5 +113,5 @@ let
     map (e: assert e.meta.type == type; e) (extenders-for service);
 in
 {
-  inherit extenders-for extenders-for-assert-type;
+  inherit all-extenders extenders-for extenders-for-assert-type;
 }

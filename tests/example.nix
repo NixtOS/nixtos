@@ -81,10 +81,16 @@ let
     };
   };
 in
-build-vm {
-  inherit drives;
+{
+  vm = build-vm {
+    inherit drives;
 
-  net = "user";
+    net = "user";
 
-  inherit os;
+    inherit os;
+  };
+
+  graph = service-graph {
+    inherit (os) name solved-services;
+  };
 }
