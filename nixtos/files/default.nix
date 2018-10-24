@@ -8,6 +8,7 @@
 extenders:
 
 let
+  # TODO(medium): make upgrades more atomic by doing like /etc/static
   files = top.lib.make-attrset (f:
     throw "Trying to define the same files at multiple positions: ${builtins.toJSON f}"
   ) (map (e: { name = e.file; value = e; }) extenders);

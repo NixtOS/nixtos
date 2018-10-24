@@ -22,12 +22,6 @@ let
       '';
     })
   ];
-in
-
-build-vm {
-  inherit drives;
-
-  net = "user";
 
   os = operating-system {
     block-devices = {
@@ -86,4 +80,11 @@ build-vm {
       ];
     };
   };
+in
+build-vm {
+  inherit drives;
+
+  net = "user";
+
+  inherit os;
 }

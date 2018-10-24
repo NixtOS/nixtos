@@ -67,43 +67,51 @@ let
     ignoreCollisions = true;
   };
 
-  complete-system = pkgs.runCommand name {} ''
-    mkdir $out
+  complete-system = pkgs.stdenvNoCC.mkDerivation {
+    inherit name;
 
-    ln -s ${kernel}/bzImage $out/kernel
-    ln -s ${initrd}/initrd $out/initrd
-    ln -s ${modules} $out/kernel-modules
-    ln -s ${system-packages} $out/sw
+    buildCommand = ''
+      mkdir $out
 
-    cat > $out/init <<EOF
-    #!${pkgs.bash}/bin/bash
-    PATH=${pkgs.coreutils}/bin:${pkgs.utillinux}/bin
+      ln -s ${kernel}/bzImage $out/kernel
+      ln -s ${initrd}/initrd $out/initrd
+      ln -s ${modules} $out/kernel-modules
+      ln -s ${system-packages} $out/sw
 
-    echo "Mounting filesystems"
-    mkdir /dev /proc /sys
-    mount -t devtmpfs none /dev
-    mount -t proc none /proc
-    mount -t sysfs none /sys
-    ${(top.lib.solve-filesystems filesystems).mount-all "/"}
+      cat > $out/init <<EOF
+      #!${pkgs.bash}/bin/bash
+      PATH=${pkgs.coreutils}/bin:${pkgs.utillinux}/bin
 
-    # TODO(low): allow configuring what is /bin/sh?
-    echo "Setting up basic filesystem"
-    mkdir -p /bin /home /root /run /tmp /var/log /var/run
-    ln -s ${pkgs.bash}/bin/bash /bin/sh
+      echo "Mounting filesystems"
+      mkdir /dev /proc /sys
+      mount -t devtmpfs none /dev
+      mount -t proc none /proc
+      mount -t sysfs none /sys
+      ${(top.lib.solve-filesystems filesystems).mount-all "/"}
 
-    echo "Adding /run/{booted,current}-system symlinks"
-    ln -s $out /run/booted-system
-    ln -s $out /run/current-system
+      # TODO(low): allow configuring what is /bin/sh?
+      echo "Setting up basic filesystem"
+      mkdir -p /bin /home /root /run /tmp /var/log /var/run
+      ln -s ${pkgs.bash}/bin/bash /bin/sh
 
-    # TODO: move to an activation script
-    echo "Allowing module autoloading"
-    echo "${pkgs.kmod}/bin/modprobe" > /proc/sys/kernel/modprobe
+      echo "Adding /run/{booted,current}-system symlinks"
+      ln -s $out /run/booted-system
+      ln -s $out /run/current-system
 
-    ${activation-script}
+      # TODO: move to an activation script
+      echo "Allowing module autoloading"
+      echo "${pkgs.kmod}/bin/modprobe" > /proc/sys/kernel/modprobe
 
-    exec ${init-command}
-    EOF
-    chmod +x $out/init
-  '';
+      ${activation-script}
+
+      exec ${init-command}
+      EOF
+      chmod +x $out/init
+    '';
+
+    passthru = {
+      inherit solved-services;
+    };
+  };
 in
   builtins.seq assert-assertions complete-system
