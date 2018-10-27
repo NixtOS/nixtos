@@ -11,6 +11,14 @@
 
 assert !(services ? "kernel");
 assert !(services ? "activation-scripts");
+# TODO(high): Add de-activation scripts
+# The idea is to be able to delete state directories that are no longer needed.
+# So the de-activation scripts would be run and passed as arguments the new
+# config, so that they can remove things no longer wanted
+# NOTE: this MUST NOT delete any user data, ONLY things that can be re-generated
+# from the configuration, should a roll-back occur
+# Maybe it would make sense to warn the user about state directories used by no
+# service too?
 
 let
   solved-services = top.lib.solve-services services;
