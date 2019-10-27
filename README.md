@@ -1,7 +1,8 @@
 # NixtOS
 
 NixtOS, the next-generation NixOS that builds on both GuixSD concepts on
-steroids and nixpkgs.
+steroids and nixpkgs. Currently requires a rewrite of every module, very far
+from being production-ready.
 
 The objectives are (from most fundamental to most user-facing):
  * Clearly defined dependencies between modules
